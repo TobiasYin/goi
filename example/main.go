@@ -5,13 +5,12 @@ import (
 	"github.com/TobiasYin/go_web_ui/node"
 )
 
-
 func main() {
 	c := make(chan struct{})
 	size := 22
 	page := node.NewPage()
 	page2 := node.NewPage()
-	page2.GetNode = func() node.Node {
+	page2.GetNode = func(this *node.Context) node.Node {
 		return node.Div{
 			Children: []node.Node{
 				node.Text{
@@ -28,7 +27,7 @@ func main() {
 			},
 		}
 	}
-	page.GetNode = func() node.Node {
+	page.GetNode = func(this *node.Context) node.Node {
 		return node.Div{
 			Children: []node.Node{
 				node.Div{
@@ -62,7 +61,7 @@ func main() {
 					},
 					OnClick: func(e node.Event) {
 						fmt.Println("Hello Callback")
-						page.SetState(func() {
+						this.SetState(func() {
 							size = 22
 						})
 					},
@@ -76,7 +75,10 @@ func main() {
 						node.PushToPage(page2)
 					},
 				},
-				page.StatefulChild(Demo),
+				this.StatefulChild(Demo),
+				this.StatefulChild(ComponentWithPara("hello")),
+				this.StatefulChild(ComponentWithPara("daisy: ")),
+				this.StatelessChild(StatelessDemo),
 			},
 		}
 	}
@@ -84,10 +86,47 @@ func main() {
 	<-c
 }
 
-func Demo(area node.StateArea) *node.Context {
+func ComponentWithPara(aaa string) node.Component {
+	return func() node.ComponentConstructor {
+		hello := 0
+		return func(context *node.Context) node.Node {
+			return node.Div{
+				Children: []node.Node{
+					node.Text{
+						Content: aaa,
+					},
+					node.Text{
+						Content: fmt.Sprintf("value: %d", hello),
+					},
+					node.Button{
+						Child: node.Text{
+							Content: "increase",
+						},
+						OnClick: func(e node.Event) {
+							context.SetState(func() {
+								hello++
+							})
+						},
+					},
+				},
+			}
+		}
+	}
+}
+
+func StatelessDemo(context *node.Context) node.Node {
+	return node.Div{
+		Children: []node.Node{
+			node.Text{
+				Content: "Stateless\n",
+			},
+		},
+	}
+}
+
+func Demo() node.ComponentConstructor {
 	size := 22
-	newCtx := node.NewContext(area)
-	newCtx.GetNode = func() node.Node {
+	return func(this *node.Context) node.Node {
 		return node.Div{
 			Children: []node.Node{
 				node.Text{
@@ -103,7 +142,7 @@ func Demo(area node.StateArea) *node.Context {
 						Content: "add",
 					},
 					OnClick: func(e node.Event) {
-						newCtx.SetState(func() {
+						this.SetState(func() {
 							size += 1
 							fmt.Printf("Push Button, size:%v\n", size)
 						})
@@ -112,5 +151,4 @@ func Demo(area node.StateArea) *node.Context {
 			},
 		}
 	}
-	return newCtx
 }
