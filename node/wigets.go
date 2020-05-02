@@ -16,6 +16,12 @@ type Button struct {
 	Child Node
 }
 
+type BR struct{}
+
+func (br BR) pack() dom.JsDomElement {
+	return dom.Dom.CreateElement("br")
+}
+
 func (d Div) getChildren() []Node {
 	return d.Children
 }

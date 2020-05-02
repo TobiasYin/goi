@@ -146,6 +146,10 @@ func Demo() node.ComponentConstructor {
 						FontWeight: node.FontWeight900,
 					},
 				},
+				node.BR{},
+				node.Text{
+					Content: fmt.Sprintf("size: %d", size),
+				},
 				node.Button{
 					Child: node.Text{
 						Content: "add",

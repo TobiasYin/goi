@@ -1,7 +1,6 @@
 package dom
 
 import (
-	"fmt"
 	"runtime"
 	"strings"
 	"syscall/js"
@@ -19,7 +18,7 @@ func (v Value) callWithPC(pc uintptr, args ...interface{}) js.Value {
 		name = name[index+1:]
 	}
 	name = strings.ToLower(name[0:1]) + name[1:]
-	fmt.Printf("Call %v\n", name)
+	//fmt.Printf("Call %v\n", name)
 	return v.Call(name, args...)
 }
 
