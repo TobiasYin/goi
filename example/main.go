@@ -15,6 +15,9 @@ func main() {
 				node.Text{
 					Content: "New Page",
 				},
+				node.BR{},
+				node.Image{Src: "/example.png"},
+				node.BR{},
 				node.Button{
 					Child: node.Text{
 						Content: "back",
