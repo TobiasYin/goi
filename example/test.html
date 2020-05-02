@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WASM Test</title>
+</head>
+<body>
+<script src="wasm_exec.js"></script>
+<script>
+    if (!WebAssembly.instantiateStreaming) { // polyfill
+        WebAssembly.instantiateStreaming = async (resp, importObject) => {
+            const source = await (await resp).arrayBuffer();
+            return await WebAssembly.instantiate(source, importObject);
+        };
+    }
+
+    const go = new Go();
+    let mod, inst;
+    WebAssembly.instantiateStreaming(fetch('test.wasm'), go.importObject).then(async (result) => {
+        mod = result.module;
+        inst = result.instance;
+        await go.run(inst);
+    });
+</script>
+<h3>sum:</h3>
+<div>&nbsp;&nbsp;<input class="ipt" type="number" value="0" oninput="sum()"></div>
+<div id="add">
+    <div>+<input class="ipt" type="number" value="0" oninput="sum()"></div>
+</div>
+<div>res: <input id="sum" type="number"></div>
+<button id="addButton">add input</button>
+<button id="sumButton">calculate</button>
+</body>
+</html>
