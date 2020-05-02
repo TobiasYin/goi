@@ -7,7 +7,7 @@ import (
 	"runtime"
 )
 
-type CompoentConsruct func(StateArea) *Context
+type ComponentConstruct func(StateArea) *Context
 
 type StateArea interface {
 	SetState(f func())
@@ -41,7 +41,7 @@ func (c *Context) doSetState() {
 	c.setStateToFather()
 }
 
-func (c *Context) StatefulChild(f CompoentConsruct) Node {
+func (c *Context) StatefulChild(f ComponentConstruct) Node {
 	return ContextKeepWrapper(*c, f)(c)
 }
 
@@ -89,11 +89,11 @@ func (p *Page) doSetState() {
 	FlashApp()
 }
 
-func (p *Page) StatefulChild(f CompoentConsruct) Node {
+func (p *Page) StatefulChild(f ComponentConstruct) Node {
 	return ContextKeepWrapper(p.Context, f)(p)
 }
 
-func ContextKeepWrapperWithKey(father Context, f CompoentConsruct, key string) CompoentConsruct {
+func ContextKeepWrapperWithKey(father Context, f ComponentConstruct, key string) ComponentConstruct {
 	contexts, ok := father.Context.Value("fatherState").(map[string]*Context)
 	if !ok {
 		return f
@@ -108,7 +108,7 @@ func ContextKeepWrapperWithKey(father Context, f CompoentConsruct, key string) C
 	}
 }
 
-func ContextKeepWrapper(father Context, f CompoentConsruct) CompoentConsruct {
+func ContextKeepWrapper(father Context, f ComponentConstruct) ComponentConstruct {
 	funcName, file, line, _ := runtime.Caller(2)
 	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
 	return ContextKeepWrapperWithKey(father, f, key)
