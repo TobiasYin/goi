@@ -7,6 +7,8 @@ import (
 	"runtime"
 )
 
+type CompoentConsruct func(StateArea) *Context
+
 type StateArea interface {
 	SetState(f func())
 	setNode(node Node)
@@ -23,6 +25,7 @@ type Context struct {
 
 func NewContext(area StateArea) *Context {
 	newCtx := context.WithValue(area.getContext(), "father", area)
+	newCtx = context.WithValue(newCtx, "fatherState", make(map[string]*Context))
 	return &Context{
 		Context: newCtx,
 	}
@@ -36,6 +39,10 @@ func (c *Context) SetState(f func()) {
 func (c *Context) doSetState() {
 	c.setNode(c.GetNode())
 	c.setStateToFather()
+}
+
+func (c *Context) StatefulChild(f CompoentConsruct) Node {
+	return ContextKeepWrapper(*c, f)(c)
 }
 
 func (c *Context) setNode(node Node) {
@@ -66,7 +73,10 @@ type Page struct {
 }
 
 func NewPage() *Page {
-	return &Page{Context{Context: context.Background()}}
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "fatherState", make(map[string]*Context))
+
+	return &Page{Context{Context: ctx}}
 }
 
 func (p *Page) SetState(f func()) {
@@ -79,13 +89,15 @@ func (p *Page) doSetState() {
 	FlashApp()
 }
 
-var contexts map[string]*Context
-
-func init() {
-	contexts = make(map[string]*Context)
+func (p *Page) StatefulChild(f CompoentConsruct) Node {
+	return ContextKeepWrapper(p.Context, f)(p)
 }
 
-func ContextKeepWrapperWithKey(f func(StateArea) *Context, key string) func(StateArea) *Context {
+func ContextKeepWrapperWithKey(father Context, f CompoentConsruct, key string) CompoentConsruct {
+	contexts, ok := father.Context.Value("fatherState").(map[string]*Context)
+	if !ok {
+		return f
+	}
 	return func(c StateArea) *Context {
 		if res, ok := contexts[key]; ok {
 			return res
@@ -96,8 +108,8 @@ func ContextKeepWrapperWithKey(f func(StateArea) *Context, key string) func(Stat
 	}
 }
 
-func ContextKeepWrapper(f func(StateArea) *Context) func(StateArea) *Context {
+func ContextKeepWrapper(father Context, f CompoentConsruct) CompoentConsruct {
 	funcName, file, line, _ := runtime.Caller(0)
 	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
-	return ContextKeepWrapperWithKey(f, key)
+	return ContextKeepWrapperWithKey(father, f, key)
 }

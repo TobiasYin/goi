@@ -27,6 +27,7 @@ func (p *pageStack) Top() *Page {
 func (p *pageStack) Pop() *Page {
 	p.size--
 	top := p.stack[p.size]
+	p.stack[p.size] = nil
 	p.stack = p.stack[0:p.size]
 	return top
 }

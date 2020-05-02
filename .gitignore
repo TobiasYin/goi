@@ -101,4 +101,4 @@ fabric.properties
 .history/
 
 
-.wasm
+*.wasm

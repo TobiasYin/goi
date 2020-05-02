@@ -5,60 +5,6 @@ import (
 	"github.com/TobiasYin/go_web_ui/node"
 )
 
-//var (
-//	size = 22
-//	page node.Page
-//)
-//
-//func getPage() node.Node {
-//	return node.Div{
-//		Children: []node.Node{
-//			node.Div{
-//				Children: []node.Node{
-//					node.Text{
-//						Content: "aaa",
-//						TextStyle: &node.TextStyle{
-//							FontSize:  size,
-//							FontColor: node.Red,
-//						},
-//					},
-//					node.Text{
-//						Content: "bbb",
-//					},
-//				},
-//			},
-//			node.Button{
-//				Child: node.Text{
-//					Content: "Click to add 1",
-//				},
-//				OnClick: func(e node.Event) {
-//					fmt.Println("Hello Callback")
-//					page.SetState(func() {
-//						size++
-//					})
-//				},
-//			},
-//			node.Button{
-//				Child: node.Text{
-//					Content: "Reset",
-//				},
-//				OnClick: func(e node.Event) {
-//					fmt.Println("Hello Callback")
-//					page.SetState(func() {
-//						size = 22
-//					})
-//				},
-//			},
-//		},
-//	}
-//}
-//
-//func main() {
-//	c := make(chan struct{})
-//	page.GetRoot = getPage
-//	page.Run()
-//	<-c
-//}
 
 func main() {
 	c := make(chan struct{})
@@ -121,7 +67,7 @@ func main() {
 						})
 					},
 				},
-				node.ContextKeepWrapper(Demo)(page),
+				page.StatefulChild(Demo),
 				node.Button{
 					Child: node.Text{
 						Content: "To new Page",

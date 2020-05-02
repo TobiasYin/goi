@@ -19,19 +19,14 @@
 
     const go = new Go();
     let mod, inst;
-    WebAssembly.instantiateStreaming(fetch('test.wasm'), go.importObject).then(async (result) => {
+    WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject).then(async (result) => {
         mod = result.module;
         inst = result.instance;
         await go.run(inst);
     });
 </script>
-<h3>sum:</h3>
-<div>&nbsp;&nbsp;<input class="ipt" type="number" value="0" oninput="sum()"></div>
-<div id="add">
-    <div>+<input class="ipt" type="number" value="0" oninput="sum()"></div>
+<div id="app">
+
 </div>
-<div>res: <input id="sum" type="number"></div>
-<button id="addButton">add input</button>
-<button id="sumButton">calculate</button>
 </body>
 </html>
