@@ -109,7 +109,7 @@ func ContextKeepWrapperWithKey(father Context, f CompoentConsruct, key string) C
 }
 
 func ContextKeepWrapper(father Context, f CompoentConsruct) CompoentConsruct {
-	funcName, file, line, _ := runtime.Caller(0)
+	funcName, file, line, _ := runtime.Caller(2)
 	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
 	return ContextKeepWrapperWithKey(father, f, key)
 }

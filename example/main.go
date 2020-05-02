@@ -76,6 +76,7 @@ func main() {
 						node.PushToPage(page2)
 					},
 				},
+				page.StatefulChild(Demo),
 			},
 		}
 	}

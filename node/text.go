@@ -63,6 +63,5 @@ func (s TextStyle) packStyle() string {
 	for k, v := range res {
 		r.WriteString(fmt.Sprintf("%s:%s;", k, v))
 	}
-	fmt.Println(r.String())
 	return r.String()
 }
