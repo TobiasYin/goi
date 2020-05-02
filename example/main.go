@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/TobiasYin/go_web_ui/node"
+	"github.com/TobiasYin/go_web_ui/node/color"
 )
 
 func main() {
 	c := make(chan struct{})
 	size := 22
-	page := node.NewPage()
-	page2 := node.NewPage()
-	page2.GetNode = func(this *node.Context) node.Node {
+	page2 := node.NewPage(func(this *node.Context) node.Node {
 		return node.Div{
 			Children: []node.Node{
 				node.Text{
@@ -20,14 +19,16 @@ func main() {
 					Child: node.Text{
 						Content: "back",
 					},
-					OnClick: func(e node.Event) {
-						node.BackToLastPage()
+					Params: node.Params{
+						OnClick: func(e node.Event) {
+							node.BackToLastPage()
+						},
 					},
 				},
 			},
 		}
-	}
-	page.GetNode = func(this *node.Context) node.Node {
+	})
+	page := node.NewPage(func(this *node.Context) node.Node {
 		return node.Div{
 			Children: []node.Node{
 				node.Div{
@@ -36,7 +37,7 @@ func main() {
 							Content: "aaa",
 							TextStyle: &node.TextStyle{
 								FontSize:  size,
-								FontColor: node.Red,
+								FontColor: color.Red,
 							},
 						},
 						node.Text{
@@ -48,31 +49,37 @@ func main() {
 					Child: node.Text{
 						Content: "Click to add 1",
 					},
-					OnClick: func(e node.Event) {
-						fmt.Println("Hello Callback")
-						page.SetState(func() {
-							size++
-						})
+					Params: node.Params{
+						OnClick: func(e node.Event) {
+							fmt.Println("Hello Callback")
+							this.SetState(func() {
+								size++
+							})
+						},
 					},
 				},
 				node.Button{
 					Child: node.Text{
 						Content: "Reset",
 					},
-					OnClick: func(e node.Event) {
-						fmt.Println("Hello Callback")
-						this.SetState(func() {
-							size = 22
-						})
+					Params: node.Params{
+						OnClick: func(e node.Event) {
+							fmt.Println("Hello Callback")
+							this.SetState(func() {
+								size = 22
+							})
+						},
 					},
 				},
-				page.StatefulChild(Demo),
+				this.StatefulChild(Demo),
 				node.Button{
 					Child: node.Text{
 						Content: "To new Page",
 					},
-					OnClick: func(e node.Event) {
-						node.PushToPage(page2)
+					Params: node.Params{
+						OnClick: func(e node.Event) {
+							node.PushToPage(page2)
+						},
 					},
 				},
 				this.StatefulChild(Demo),
@@ -81,7 +88,7 @@ func main() {
 				this.StatelessChild(StatelessDemo),
 			},
 		}
-	}
+	})
 	node.NewApp(page)
 	<-c
 }
@@ -102,10 +109,12 @@ func ComponentWithPara(aaa string) node.Component {
 						Child: node.Text{
 							Content: "increase",
 						},
-						OnClick: func(e node.Event) {
-							context.SetState(func() {
-								hello++
-							})
+						Params: node.Params{
+							OnClick: func(e node.Event) {
+								context.SetState(func() {
+									hello++
+								})
+							},
 						},
 					},
 				},
@@ -132,7 +141,7 @@ func Demo() node.ComponentConstructor {
 				node.Text{
 					Content: "Text Component",
 					TextStyle: &node.TextStyle{
-						FontColor:  node.RoyalBlue,
+						FontColor:  color.RoyalBlue,
 						FontSize:   size,
 						FontWeight: node.FontWeight900,
 					},
@@ -141,11 +150,13 @@ func Demo() node.ComponentConstructor {
 					Child: node.Text{
 						Content: "add",
 					},
-					OnClick: func(e node.Event) {
-						this.SetState(func() {
-							size += 1
-							fmt.Printf("Push Button, size:%v\n", size)
-						})
+					Params: node.Params{
+						OnClick: func(e node.Event) {
+							this.SetState(func() {
+								size += 1
+								fmt.Printf("Push Button, size:%v\n", size)
+							})
+						},
 					},
 				},
 			},

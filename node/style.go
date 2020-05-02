@@ -1,6 +1,7 @@
 package node
 
 type Style struct {
+
 	// TODO 填充CSS style属性
 }
 

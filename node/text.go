@@ -3,6 +3,7 @@ package node
 import (
 	"fmt"
 	"github.com/TobiasYin/go_web_ui/dom"
+	"github.com/TobiasYin/go_web_ui/node/color"
 	"strconv"
 	"strings"
 )
@@ -11,7 +12,6 @@ type Text struct {
 	Content   string
 	TextStyle *TextStyle
 }
-
 
 func (t Text) pack() dom.JsDomElement {
 	node := dom.Dom.CreateTextNode(t.Content)
@@ -46,8 +46,26 @@ const (
 type TextStyle struct {
 	FontSize   int
 	FontWeight FontWeight
-	FontColor  Color
+	FontColor  color.Color
+	FontStyle  FontStyle
+	FontFamily string
+	TextDecoration
 }
+
+type TextDecoration string
+
+const (
+	TextDecorationUnderline   TextDecoration = "underline"
+	TextDecorationLineThrough TextDecoration = "line-through"
+	TextDecorationOverline    TextDecoration = "overline"
+)
+
+type FontStyle string
+
+const (
+	FontStyleItalic FontStyle = "italic"
+	FontStyleNormal FontStyle = "normal"
+)
 
 func (s TextStyle) packStyle() string {
 	res := make(map[string]string)
@@ -58,6 +76,12 @@ func (s TextStyle) packStyle() string {
 		res["font-size"] = fmt.Sprintf("%dpx", s.FontSize)
 	}
 	res["color"] = s.FontColor.ToHex()
+	if s.FontFamily != "" {
+		res["font-family"] = s.FontFamily
+	}
+	if s.FontStyle != "" {
+		res["font-style"] = string(s.FontStyle)
+	}
 
 	var r strings.Builder
 	for k, v := range res {

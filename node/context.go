@@ -88,11 +88,17 @@ type Page struct {
 	Context
 }
 
-func NewPage() *Page {
+func NewPageEmpty() *Page {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "fatherState", make(map[string]*Context))
 	page := Page{Context{Context: ctx, isPage: true}}
 	return &page
+}
+
+func NewPage(getNode ComponentConstructor) *Page {
+	page := NewPageEmpty()
+	page.GetNode = getNode
+	return page
 }
 
 func ContextKeepWrapperWithKey(father *Context, f ComponentCreator, key string) ComponentCreator {
