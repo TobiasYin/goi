@@ -20,11 +20,17 @@ type Style struct {
 	Display                Display
 	BoxShadow              []BoxShadow
 	FlexGrow               int
+	Border                 Border
+	BorderRadius           int
+	Outline                Outline
 	// TODO 填充CSS style属性
 }
 
 func (s Style) packStyle() string {
 	res := make(map[string]string)
+	if s.BorderRadius != 0 {
+		res["border-radius"] = fmt.Sprintf("%dpx", s.BorderRadius)
+	}
 	if s.Height.Mode != SizeModeDefault || s.Height.Value != 0 {
 		res["height"] = s.Height.String()
 	}
@@ -61,6 +67,10 @@ func (s Style) packStyle() string {
 	if s.FlexGrow != 0 {
 		res["flex-grow"] = fmt.Sprintf("%d", s.FlexGrow)
 	}
+	outline := s.Outline.packStyle()
+	if len(outline) != 0 {
+		res["outline"] = outline
+	}
 	if len(s.BoxShadow) != 0 {
 		var b strings.Builder
 		for _, bs := range s.BoxShadow {
@@ -71,6 +81,10 @@ func (s Style) packStyle() string {
 	var r strings.Builder
 	for k, v := range res {
 		r.WriteString(fmt.Sprintf("%s:%s;", k, v))
+	}
+	border := s.Border.packStyle()
+	if len(border) != 0 {
+		r.WriteString(border)
 	}
 	return r.String()
 }
@@ -137,3 +151,16 @@ const (
 	DisplayBlock       Display = "block"
 	DisplayInlineBlock Display = "inline-block"
 )
+
+type Outline struct {
+	Width int
+	Style BorderType
+	Color color.Color
+}
+
+func (o Outline) packStyle() string {
+	if o.Width == 0 && o.Color == color.Black && o.Style == "" {
+		return ""
+	}
+	return fmt.Sprintf("%dpx %s %s", o.Width, o.Style, o.Color)
+}

@@ -119,9 +119,7 @@ type border struct {
 	Color color.Color
 }
 
-func (b Border) pack() dom.JsDomElement {
-	ele := dom.Dom.CreateElement("div")
-
+func (b Border) packStyle() string {
 	borders := make([]border, 4)
 	for i := 0; i < 4; i++ {
 		borders[i].Width = b.Width
@@ -188,8 +186,15 @@ func (b Border) pack() dom.JsDomElement {
 		}
 		style.WriteString(";")
 	}
-	if style.Len() != 0 {
-		ele.Set("style", style.String())
+	return style.String()
+}
+
+func (b Border) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+
+	style := b.packStyle()
+	if len(style) != 0 {
+		ele.Set("style", style)
 	}
 	packChildren(b, &ele)
 	return ele
