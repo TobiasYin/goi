@@ -10,15 +10,16 @@ import (
 
 type Text struct {
 	Content   string
-	TextStyle *TextStyle
+	TextStyle TextStyle
 }
 
 func (t Text) pack() dom.JsDomElement {
 	node := dom.Dom.CreateTextNode(t.Content)
 	father := dom.Dom.CreateElement("span")
 	father.AppendChild(node)
-	if t.TextStyle != nil {
-		father.Set("style", t.TextStyle.packStyle())
+	style := t.TextStyle.packStyle()
+	if len(style) != 0 {
+		father.Set("style", style)
 	}
 	return father
 }
@@ -46,7 +47,7 @@ const (
 type TextStyle struct {
 	FontSize   int
 	FontWeight FontWeight
-	FontColor  color.Color
+	Color      color.Color
 	FontStyle  FontStyle
 	FontFamily string
 	TextDecoration
@@ -75,7 +76,9 @@ func (s TextStyle) packStyle() string {
 	if s.FontSize != 0 {
 		res["font-size"] = fmt.Sprintf("%dpx", s.FontSize)
 	}
-	res["color"] = s.FontColor.String()
+	if s.Color != color.Black {
+		res["color"] = s.Color.String()
+	}
 	if s.FontFamily != "" {
 		res["font-family"] = s.FontFamily
 	}

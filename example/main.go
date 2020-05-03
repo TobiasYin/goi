@@ -90,9 +90,9 @@ func main() {
 					Children: []node.Node{
 						node.Text{
 							Content: "aaa",
-							TextStyle: &node.TextStyle{
-								FontSize:  size,
-								FontColor: color.Red,
+							TextStyle: node.TextStyle{
+								FontSize: size,
+								Color:    color.Red,
 							},
 						},
 						node.Text{
@@ -203,8 +203,8 @@ func Demo() node.ComponentConstructor {
 			Children: []node.Node{
 				node.Text{
 					Content: "Text Component",
-					TextStyle: &node.TextStyle{
-						FontColor:  color.RoyalBlue,
+					TextStyle: node.TextStyle{
+						Color:      color.RoyalBlue,
 						FontSize:   size,
 						FontWeight: node.FontWeight900,
 					},
