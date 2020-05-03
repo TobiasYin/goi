@@ -34,7 +34,7 @@ func pack(able packAble, name string) dom.JsDomElement {
 }
 
 type Params struct {
-	Style       *Style
+	Style       Style
 	Class       []string
 	Value       string
 	Placeholder string
@@ -53,8 +53,9 @@ func (e Params) getParam() Params {
 
 func (e Params) packWithName(name string) dom.JsDomElement {
 	ele := dom.Dom.CreateElement(name)
-	if e.Style != nil {
-		ele.Set("style", e.Style.packStyle())
+	style := e.Style.packStyle()
+	if style != "" {
+		ele.Set("style", style)
 	}
 	if len(e.Class) != 0 {
 		ele.Set("className", strings.Join(e.Class, " "))

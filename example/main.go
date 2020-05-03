@@ -10,7 +10,7 @@ func main() {
 	c := make(chan struct{})
 	size := 22
 	page2 := node.NewPage(func(this *node.Context) node.Node {
-		return node.Div{
+		return node.Column{
 			Children: []node.Node{
 				node.Text{
 					Content: "New Page",
@@ -36,9 +36,10 @@ func main() {
 		}
 	})
 	page := node.NewPage(func(this *node.Context) node.Node {
-		return node.Div{
+		return node.Column{
+			Alignment: node.Center,
 			Children: []node.Node{
-				node.Div{
+				node.Inline{
 					Children: []node.Node{
 						node.Text{
 							Content: "aaa",
@@ -112,7 +113,7 @@ func ComponentWithPara(aaa string) node.Component {
 	return func() node.ComponentConstructor {
 		hello := 0
 		return func(context *node.Context) node.Node {
-			return node.Div{
+			return node.Block{
 				Children: []node.Node{
 					node.Text{
 						Content: aaa,
@@ -139,7 +140,7 @@ func ComponentWithPara(aaa string) node.Component {
 }
 
 func StatelessDemo(context *node.Context) node.Node {
-	return node.Div{
+	return node.Block{
 		Children: []node.Node{
 			node.Text{
 				Content: "Stateless\n",
@@ -151,7 +152,7 @@ func StatelessDemo(context *node.Context) node.Node {
 func Demo() node.ComponentConstructor {
 	size := 22
 	return func(this *node.Context) node.Node {
-		return node.Div{
+		return node.Block{
 			Children: []node.Node{
 				node.Text{
 					Content: "Text Component",

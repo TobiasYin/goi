@@ -7,16 +7,31 @@ import (
 	"strings"
 )
 
-type Div struct {
+type Inline struct {
 	Params
 	Children []Node
 }
 
-func (d Div) getChildren() []Node {
+func (d Inline) getChildren() []Node {
 	return d.Children
 }
 
-func (d Div) pack() dom.JsDomElement {
+func (d Inline) pack() dom.JsDomElement {
+	ele := pack(d, "div")
+	ele.Set("className", ele.Get("className").String()+" go-ui-inline-div")
+	return ele
+}
+
+type Block struct {
+	Params
+	Children []Node
+}
+
+func (d Block) getChildren() []Node {
+	return d.Children
+}
+
+func (d Block) pack() dom.JsDomElement {
 	return pack(d, "div")
 }
 
@@ -176,7 +191,6 @@ func (b Border) pack() dom.JsDomElement {
 	if style.Len() != 0 {
 		ele.Set("style", style.String())
 	}
-	fmt.Println(style.String())
 	packChildren(b, &ele)
 	return ele
 }
@@ -241,11 +255,43 @@ func (p Padding) pack() dom.JsDomElement {
 	if style.Len() != 0 {
 		ele.Set("style", style.String())
 	}
-	fmt.Println(style.String())
 	packChildren(p, &ele)
 	return ele
 }
 
 func (p Padding) getChildren() []Node {
 	return []Node{p.Child}
+}
+
+type Column struct {
+	Children  []Node
+	Alignment Position
+}
+
+func (c Column) getChildren() []Node {
+	alignment := c.Alignment
+	if alignment == "" {
+		alignment = Left
+	}
+	res := make([]Node, len(c.Children))
+	for i, child := range c.Children {
+		res[i] = Block{
+			Params: Params{
+				Style: Style{
+					TextAlign: c.Alignment,
+				},
+			},
+			Children: []Node{
+				child,
+			},
+		}
+	}
+	return res
+}
+
+func (c Column) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+	packChildren(c, &ele)
+	ele.Set("className", ele.Get("className").String()+" go-ui-column")
+	return ele
 }

@@ -7,6 +7,8 @@ import (
 )
 
 type Style struct {
+	Height                 Size
+	Width                  Size
 	TextAlign              Position
 	TextIndent             int
 	Color                  color.Color
@@ -22,6 +24,8 @@ type Style struct {
 
 func (s Style) packStyle() string {
 	res := make(map[string]string)
+	res["height"] = s.Height.String()
+	res["width"] = s.Width.String()
 	if s.TextAlign != "" {
 		res["text-align"] = string(s.TextAlign)
 	}
@@ -56,13 +60,33 @@ func (s Style) packStyle() string {
 		}
 		res["box-shadow"] = b.String()
 	}
-
 	var r strings.Builder
 	for k, v := range res {
 		r.WriteString(fmt.Sprintf("%s:%s;", k, v))
 	}
 	return r.String()
 }
+
+type Size struct {
+	Mode  SizeMode
+	Value int
+}
+
+func (s Size) String() string {
+	if s.Mode == SizeModeDefault || s.Mode == SizeModeAuto {
+		return string(SizeModeAuto)
+	}
+	return fmt.Sprintf("%d%v", s.Value, s.Mode)
+}
+
+type SizeMode string
+
+const (
+	SizeModeDefault SizeMode = ""
+	SizeModeAuto    SizeMode = "auto"
+	SizeModePx      SizeMode = "px"
+	SizeModePercent SizeMode = "%"
+)
 
 type BoxShadow struct {
 	XOffset      int
