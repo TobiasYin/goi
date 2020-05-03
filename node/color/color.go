@@ -35,6 +35,37 @@ func NewWithAlpha(r int, g int, b int, a int) Color {
 	}
 }
 
+func (c Color) WithAlpha(a int) Color {
+	alpha := float32(a) / 255
+	if alpha < 0 {
+		alpha = 0
+	}
+	if alpha > 1 {
+		alpha = 1
+	}
+	newColor := c
+	newColor.a = 1 - alpha
+	return newColor
+}
+
+func (c Color) WithRed(r int) Color {
+	newColor := c
+	newColor.r = byte(r)
+	return newColor
+}
+
+func (c Color) WithGreen(g int) Color {
+	newColor := c
+	newColor.g = byte(g)
+	return newColor
+}
+
+func (c Color) WithBlue(b int) Color {
+	newColor := c
+	newColor.b = byte(b)
+	return newColor
+}
+
 func (c Color) ToHex() string {
 	return fmt.Sprintf("#%.2x%.2x%.2x", c.r, c.g, c.b)
 }
