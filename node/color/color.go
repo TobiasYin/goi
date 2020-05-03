@@ -5,21 +5,45 @@ import (
 )
 
 type Color struct {
-	r byte
-	g byte
-	b byte
+	r int
+	g int
+	b int
 	a float32
 }
 
+var ColorNil = Color{
+	r: 0,
+	g: 0,
+	b: 0,
+	a: 0,
+}
+
 func New(r int, g int, b int) Color {
+	if r == 0 && g == 0 && b == 0 {
+		r = -1
+		g = -1
+		b = -1
+	} else {
+		if r < 0 {
+			r = 0
+		}
+		if g < 0 {
+			g = 0
+		}
+		if b < 0 {
+			b = 0
+		}
+
+	}
 	return Color{
-		byte(r),
-		byte(g),
-		byte(b),
+		r % 256,
+		g % 256,
+		b % 256,
 		0,
 	}
 }
 func NewWithAlpha(r int, g int, b int, a int) Color {
+	c := New(r, g, b)
 	alpha := float32(a) / 255
 	if alpha < 0 {
 		alpha = 0
@@ -27,12 +51,8 @@ func NewWithAlpha(r int, g int, b int, a int) Color {
 	if alpha > 1 {
 		alpha = 1
 	}
-	return Color{
-		byte(r),
-		byte(g),
-		byte(b),
-		1 - alpha,
-	}
+	c.a = alpha
+	return c
 }
 
 func (c Color) WithAlpha(a int) Color {
@@ -50,27 +70,61 @@ func (c Color) WithAlpha(a int) Color {
 
 func (c Color) WithRed(r int) Color {
 	newColor := c
-	newColor.r = byte(r)
+	if r < 0 {
+		r = 0
+	}
+	newColor.r = r % 256
+	if c.r == 0 && c.g == 0 && c.b == 0 {
+		c.r = -1
+		c.g = -1
+		c.b = -1
+	}
 	return newColor
 }
 
 func (c Color) WithGreen(g int) Color {
 	newColor := c
-	newColor.g = byte(g)
+	if g < 0 {
+		g = 0
+	}
+	newColor.g = g % 256
+	if c.r == 0 && c.g == 0 && c.b == 0 {
+		c.r = -1
+		c.g = -1
+		c.b = -1
+	}
 	return newColor
 }
 
 func (c Color) WithBlue(b int) Color {
 	newColor := c
-	newColor.b = byte(b)
+	if b < 0 {
+		b = 0
+	}
+	newColor.b = b % 256
+	if c.r == 0 && c.g == 0 && c.b == 0 {
+		c.r = -1
+		c.g = -1
+		c.b = -1
+	}
 	return newColor
 }
 
 func (c Color) ToHex() string {
+	if c.r == -1 && c.g == -1 && c.b == -1 {
+		c.r = 0
+		c.g = 0
+		c.b = 0
+	}
 	return fmt.Sprintf("#%.2x%.2x%.2x", c.r, c.g, c.b)
 }
 
 func (c Color) ToRGBA() string {
+	if c.r == -1 && c.g == -1 && c.b == -1 {
+		c.r = 0
+		c.g = 0
+		c.b = 0
+	}
 	if c.a != 0 {
 		return fmt.Sprintf("rgba(%d, %d, %d, %v)", c.r, c.g, c.b, 1-c.a)
 	} else {

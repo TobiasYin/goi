@@ -76,7 +76,7 @@ func (s TextStyle) packStyle() string {
 	if s.FontSize != 0 {
 		res["font-size"] = fmt.Sprintf("%dpx", s.FontSize)
 	}
-	if s.Color != color.Black {
+	if s.Color != color.ColorNil {
 		res["color"] = s.Color.String()
 	}
 	if s.FontFamily != "" {

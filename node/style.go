@@ -23,6 +23,7 @@ type Style struct {
 	Border                 Border
 	BorderRadius           int
 	Outline                Outline
+	Padding                Padding
 	// TODO 填充CSS style属性
 }
 
@@ -43,10 +44,10 @@ func (s Style) packStyle() string {
 	if s.TextIndent != 0 {
 		res["text-indent"] = fmt.Sprintf("%dem", s.TextIndent)
 	}
-	if s.Color != color.Black {
+	if s.Color != color.ColorNil{
 		res["color"] = s.Color.String()
 	}
-	if s.BackgroundColor != color.Black {
+	if s.BackgroundColor != color.ColorNil {
 		res["background-color"] = s.BackgroundColor.String()
 	}
 	if s.BackgroundImage != "" {
@@ -85,6 +86,10 @@ func (s Style) packStyle() string {
 	border := s.Border.packStyle()
 	if len(border) != 0 {
 		r.WriteString(border)
+	}
+	padding := s.Padding.packStyle()
+	if len(padding) != 0 {
+		r.WriteString(padding)
 	}
 	return r.String()
 }
@@ -152,15 +157,59 @@ const (
 	DisplayInlineBlock Display = "inline-block"
 )
 
+// 要显示必须写width，默认是0
 type Outline struct {
 	Width int
 	Style BorderType
 	Color color.Color
 }
 
+var OutlineNil = Outline{
+	Width: 0,
+	Color: color.White,
+}
+
 func (o Outline) packStyle() string {
-	if o.Width == 0 && o.Color == color.Black && o.Style == "" {
+	if o.Width == 0 && o.Color == color.ColorNil && o.Style == "" {
 		return ""
 	}
 	return fmt.Sprintf("%dpx %s %s", o.Width, o.Style, o.Color)
+}
+
+type Padding struct {
+	Width  int
+	Left   int
+	Right  int
+	Top    int
+	Bottom int
+}
+
+func (p Padding) packStyle() string {
+	padding := make([]int, 4)
+	for i := 0; i < 4; i++ {
+		padding[i] = p.Width
+	}
+	if p.Left != 0 {
+		padding[0] = p.Left
+	}
+	if p.Right != 0 {
+		padding[1] = p.Right
+	}
+	if p.Top != 0 {
+		padding[2] = p.Top
+	}
+	if p.Bottom != 0 {
+		padding[3] = p.Bottom
+	}
+
+	var style strings.Builder
+	style.WriteString("display:inline-block;")
+	prefix := []string{"left", "right", "top", "bottom"}
+	for i, v := range padding {
+		if v == 0 {
+			continue
+		}
+		style.WriteString(fmt.Sprintf("padding-%s: %dpx;", prefix[i], v))
+	}
+	return style.String()
 }

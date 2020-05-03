@@ -74,7 +74,7 @@ func main() {
 								},
 							},
 						},
-						node.Padding{
+						node.Margin{
 							Left: 10,
 						},
 						node.Inline{
@@ -142,7 +142,7 @@ func main() {
 					Color: color.Red,
 					Type:  node.BorderTypeSolid,
 				},
-				node.Padding{
+				node.Margin{
 					Width: 10,
 					Child: this.StatefulChild(Demo),
 				},

@@ -144,16 +144,16 @@ func (b Border) packStyle() string {
 		borders[3].Width = b.Bottom
 	}
 
-	if b.LeftColor != color.Black {
+	if b.LeftColor != color.ColorNil {
 		borders[0].Color = b.LeftColor
 	}
-	if b.RightColor != color.Black {
+	if b.RightColor != color.ColorNil {
 		borders[1].Color = b.RightColor
 	}
-	if b.TopColor != color.Black {
+	if b.TopColor != color.ColorNil {
 		borders[2].Color = b.TopColor
 	}
-	if b.BottomColor != color.Black {
+	if b.BottomColor != color.ColorNil {
 		borders[3].Color = b.BottomColor
 	}
 
@@ -173,7 +173,7 @@ func (b Border) packStyle() string {
 	style.WriteString("display:inline-block;")
 	prefix := []string{"left", "right", "top", "bottom"}
 	for i, v := range borders {
-		if v.Width == 0 && v.Type == "" && v.Color == color.Black {
+		if v.Width == 0 && v.Type == "" && v.Color == color.ColorNil {
 			continue
 		}
 		style.WriteString("border-")
@@ -186,7 +186,7 @@ func (b Border) packStyle() string {
 			style.WriteString(string(v.Type))
 			style.WriteString(" ")
 		}
-		if v.Color != color.Black {
+		if v.Color != color.ColorNil {
 			style.WriteString(v.Color.String())
 		}
 		style.WriteString(";")
@@ -224,7 +224,7 @@ const (
 	BorderTypeOutset BorderType = "outset"
 )
 
-type Padding struct {
+type Margin struct {
 	Child  Node
 	Width  int
 	Left   int
@@ -233,30 +233,30 @@ type Padding struct {
 	Bottom int
 }
 
-func (p Padding) pack() dom.JsDomElement {
+func (m Margin) pack() dom.JsDomElement {
 	ele := dom.Dom.CreateElement("div")
 
-	padding := make([]int, 4)
+	margin := make([]int, 4)
 	for i := 0; i < 4; i++ {
-		padding[i] = p.Width
+		margin[i] = m.Width
 	}
-	if p.Left != 0 {
-		padding[0] = p.Left
+	if m.Left != 0 {
+		margin[0] = m.Left
 	}
-	if p.Right != 0 {
-		padding[1] = p.Right
+	if m.Right != 0 {
+		margin[1] = m.Right
 	}
-	if p.Top != 0 {
-		padding[2] = p.Top
+	if m.Top != 0 {
+		margin[2] = m.Top
 	}
-	if p.Bottom != 0 {
-		padding[3] = p.Bottom
+	if m.Bottom != 0 {
+		margin[3] = m.Bottom
 	}
 
 	var style strings.Builder
 	style.WriteString("display:inline-block;")
 	prefix := []string{"left", "right", "top", "bottom"}
-	for i, v := range padding {
+	for i, v := range margin {
 		if v == 0 {
 			continue
 		}
@@ -265,12 +265,12 @@ func (p Padding) pack() dom.JsDomElement {
 	if style.Len() != 0 {
 		ele.Set("style", style.String())
 	}
-	packChildren(p, &ele)
+	packChildren(m, &ele)
 	return ele
 }
 
-func (p Padding) getChildren() []Node {
-	return []Node{p.Child}
+func (m Margin) getChildren() []Node {
+	return []Node{m.Child}
 }
 
 type Column struct {
