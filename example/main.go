@@ -11,6 +11,7 @@ func main() {
 	size := 22
 	page2 := node.NewPage(func(this *node.Context) node.Node {
 		return node.Column{
+			Alignment: node.Right,
 			Children: []node.Node{
 				node.Text{
 					Content: "New Page",
@@ -52,21 +53,24 @@ func main() {
 			Alignment: node.Center,
 			Children: []node.Node{
 				node.Row{
-					Expand:    false,
+					Expand:    true,
 					Alignment: node.Center,
 					Children: []node.Node{
-						node.Inline{
-							Params: node.Params{
-								Style: node.Style{
-									Height: node.Size{
-										Mode:  node.SizeModePx,
-										Value: 50,
+						node.Expanded{
+							Flex: 1,
+							Child: node.Inline{
+								Params: node.Params{
+									Style: node.Style{
+										Height: node.Size{
+											Mode:  node.SizeModePx,
+											Value: 50,
+										},
 									},
 								},
-							},
-							Children: []node.Node{
-								node.Text{
-									Content: "Hello",
+								Children: []node.Node{
+									node.Text{
+										Content: "Hello",
+									},
 								},
 							},
 						},

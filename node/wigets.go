@@ -278,7 +278,7 @@ func (c Column) getChildren() []Node {
 		res[i] = Block{
 			Params: Params{
 				Style: Style{
-					TextAlign: c.Alignment,
+					TextAlign: alignment,
 				},
 			},
 			Children: []Node{
@@ -303,23 +303,6 @@ type Row struct {
 }
 
 func (r Row) getChildren() []Node {
-	//alignment := r.Alignment
-	//if alignment == "" {
-	//	alignment = Left
-	//}
-	//res := make([]Node, len(r.Children))
-	//for i, child := range r.Children {
-	//	res[i] = Inline{
-	//		Params: Params{
-	//			Style: Style{
-	//				TextAlign: r.Alignment,
-	//			},
-	//		},
-	//		Children: []Node{
-	//			child,
-	//		},
-	//	}
-	//}
 	return r.Children
 }
 
@@ -342,7 +325,11 @@ type Expanded struct {
 
 func (e Expanded) getChildren() []Node {
 
-	return []Node{Inline{
+	return []Node{e.Child}
+}
+
+func (e Expanded) pack() dom.JsDomElement {
+	return Inline{
 		Params: Params{
 			Style: Style{
 				FlexGrow: e.Flex,
@@ -351,11 +338,5 @@ func (e Expanded) getChildren() []Node {
 		Children: []Node{
 			e.Child,
 		},
-	}}
-}
-
-func (e Expanded) pack() dom.JsDomElement {
-	ele := dom.Dom.CreateElement("div")
-	packChildren(e, &ele)
-	return ele
+	}.pack()
 }

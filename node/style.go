@@ -118,7 +118,7 @@ const (
 	Left   Position = "left"
 	Center Position = "center"
 	Top    Position = "top"
-	Bottom Position = "Bottom"
+	Bottom Position = "bottom"
 )
 
 type BackgroundRepeat string
