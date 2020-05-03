@@ -295,3 +295,67 @@ func (c Column) pack() dom.JsDomElement {
 	ele.Set("className", ele.Get("className").String()+" go-ui-column")
 	return ele
 }
+
+type Row struct {
+	Alignment Position
+	Expand    bool
+	Children  []Node
+}
+
+func (r Row) getChildren() []Node {
+	//alignment := r.Alignment
+	//if alignment == "" {
+	//	alignment = Left
+	//}
+	//res := make([]Node, len(r.Children))
+	//for i, child := range r.Children {
+	//	res[i] = Inline{
+	//		Params: Params{
+	//			Style: Style{
+	//				TextAlign: r.Alignment,
+	//			},
+	//		},
+	//		Children: []Node{
+	//			child,
+	//		},
+	//	}
+	//}
+	return r.Children
+}
+
+func (r Row) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+	ele.Set("className", ele.Get("className").String()+" go-ui-row")
+	style := "align-items:" + string(r.Alignment) + ";"
+	if r.Expand {
+		style += "display:flex;"
+	}
+	ele.Set("style", style)
+	packChildren(r, &ele)
+	return ele
+}
+
+type Expanded struct {
+	Flex  int
+	Child Node
+}
+
+func (e Expanded) getChildren() []Node {
+
+	return []Node{Inline{
+		Params: Params{
+			Style: Style{
+				FlexGrow: e.Flex,
+			},
+		},
+		Children: []Node{
+			e.Child,
+		},
+	}}
+}
+
+func (e Expanded) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+	packChildren(e, &ele)
+	return ele
+}

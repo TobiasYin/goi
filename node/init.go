@@ -20,6 +20,9 @@ type packChildAble interface {
 
 func packChildren(able packChildAble, ele *dom.JsDomElement) {
 	for _, c := range able.getChildren() {
+		if c == nil{
+			continue
+		}
 		//Pack
 		v := c.pack()
 		ele.AppendChild(v)

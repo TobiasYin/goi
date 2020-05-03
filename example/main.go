@@ -20,7 +20,19 @@ func main() {
 					Href:  "http://www.baidu.com",
 				},
 				node.BR{},
-				node.Image{Src: "/example.png"},
+				node.Image{
+					Src: "/example.png",
+					Params: node.Params{
+						Style: node.Style{
+							Height: node.Size{
+								Value: 100,
+							},
+							Width: node.Size{
+								Value: 100,
+							},
+						},
+					},
+				},
 				node.BR{},
 				node.Button{
 					Child: node.Text{
@@ -39,6 +51,37 @@ func main() {
 		return node.Column{
 			Alignment: node.Center,
 			Children: []node.Node{
+				node.Row{
+					Expand:    false,
+					Alignment: node.Center,
+					Children: []node.Node{
+						node.Inline{
+							Params: node.Params{
+								Style: node.Style{
+									Height: node.Size{
+										Mode:  node.SizeModePx,
+										Value: 50,
+									},
+								},
+							},
+							Children: []node.Node{
+								node.Text{
+									Content: "Hello",
+								},
+							},
+						},
+						node.Padding{
+							Left: 10,
+						},
+						node.Inline{
+							Children: []node.Node{
+								node.Text{
+									Content: "World",
+								},
+							},
+						},
+					},
+				},
 				node.Inline{
 					Children: []node.Node{
 						node.Text{

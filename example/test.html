@@ -13,22 +13,20 @@
 
         .test {
             display: flex;
-            flex-direction: column;
-            alignment: center;
+            flex-direction: row;
+            align-items: center;
         }
-        .go-ui-column{
-            text-align: center;
-        }
+
 
     </style>
 </head>
 <body>
 <div class="test">
-    <div class="go-ui-column">
-        <div class="inline-div">a</div>
+    <div class="go-ui-row">
+        <div class="inline-div" style="height: 30px;background-color: red; width: 30px">a</div>
     </div>
-    <div class="inline-div">b</div>
-    <div class="inline-div">c</div>
+    <div class="inline-div" style="height: 40px;background-color: blue;width: 40px">b</div>
+    <div class="inline-div" style="height: 50px;background-color: green;width: 50px;">c</div>
 
 </div>
 </body>

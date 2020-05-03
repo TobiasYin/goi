@@ -19,13 +19,18 @@ type Style struct {
 	BackgroundPosition     Position
 	Display                Display
 	BoxShadow              []BoxShadow
+	FlexGrow               int
 	// TODO 填充CSS style属性
 }
 
 func (s Style) packStyle() string {
 	res := make(map[string]string)
-	res["height"] = s.Height.String()
-	res["width"] = s.Width.String()
+	if s.Height.Mode != SizeModeDefault || s.Height.Value != 0 {
+		res["height"] = s.Height.String()
+	}
+	if s.Width.Mode != SizeModeDefault || s.Width.Value != 0 {
+		res["width"] = s.Width.String()
+	}
 	if s.TextAlign != "" {
 		res["text-align"] = string(s.TextAlign)
 	}
@@ -53,6 +58,9 @@ func (s Style) packStyle() string {
 	if s.Display != "" {
 		res["display"] = string(s.Display)
 	}
+	if s.FlexGrow != 0 {
+		res["flex-grow"] = fmt.Sprintf("%d", s.FlexGrow)
+	}
 	if len(s.BoxShadow) != 0 {
 		var b strings.Builder
 		for _, bs := range s.BoxShadow {
@@ -73,6 +81,9 @@ type Size struct {
 }
 
 func (s Size) String() string {
+	if s.Mode == SizeModeDefault && s.Value != 0 {
+		s.Mode = SizeModePx
+	}
 	if s.Mode == SizeModeDefault || s.Mode == SizeModeAuto {
 		return string(SizeModeAuto)
 	}
