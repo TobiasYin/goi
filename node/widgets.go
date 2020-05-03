@@ -119,6 +119,11 @@ type border struct {
 	Color color.Color
 }
 
+var BorderNil = Border{
+	Color: color.White,
+	Width: 0,
+}
+
 func (b Border) packStyle() string {
 	borders := make([]border, 4)
 	for i := 0; i < 4; i++ {
