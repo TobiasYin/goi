@@ -1,25 +1,15 @@
 package node
 
-import "github.com/TobiasYin/go_web_ui/dom"
+import (
+	"fmt"
+	"github.com/TobiasYin/go_web_ui/dom"
+	"github.com/TobiasYin/go_web_ui/node/color"
+	"strings"
+)
 
 type Div struct {
 	Params
 	Children []Node
-}
-
-type Input struct {
-	Params
-}
-
-type Button struct {
-	Params
-	Child Node
-}
-
-type BR struct{}
-
-func (br BR) pack() dom.JsDomElement {
-	return dom.Dom.CreateElement("br")
 }
 
 func (d Div) getChildren() []Node {
@@ -30,6 +20,39 @@ func (d Div) pack() dom.JsDomElement {
 	return pack(d, "div")
 }
 
+type P struct {
+	Params
+	Children []Node
+}
+
+func (p P) getChildren() []Node {
+	return p.Children
+}
+
+func (p P) pack() dom.JsDomElement {
+	return pack(p, "p")
+}
+
+type Link struct {
+	Params
+	Child Node
+	Href  string
+}
+
+func (l Link) getChildren() []Node {
+	return []Node{l.Child}
+}
+
+func (l Link) pack() dom.JsDomElement {
+	ele := pack(l, "a")
+	ele.Set("href", l.Href)
+	return ele
+}
+
+type Input struct {
+	Params
+}
+
 func (i Input) getChildren() []Node {
 	return []Node{}
 }
@@ -38,10 +61,191 @@ func (i Input) pack() dom.JsDomElement {
 	return pack(i, "input")
 }
 
+type Button struct {
+	Params
+	Child Node
+}
+
 func (b Button) getChildren() []Node {
 	return []Node{b.Child}
 }
 
 func (b Button) pack() dom.JsDomElement {
 	return pack(b, "button")
+}
+
+type BR struct{}
+
+func (br BR) pack() dom.JsDomElement {
+	return dom.Dom.CreateElement("br")
+}
+
+type Border struct {
+	Child       Node
+	Width       int
+	Left        int
+	Right       int
+	Bottom      int
+	Top         int
+	Type        BorderType
+	LeftType    BorderType
+	RightType   BorderType
+	BottomType  BorderType
+	TopType     BorderType
+	Color       color.Color
+	LeftColor   color.Color
+	RightColor  color.Color
+	TopColor    color.Color
+	BottomColor color.Color
+}
+type border struct {
+	Width int
+	Type  BorderType
+	Color color.Color
+}
+
+func (b Border) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+
+	borders := make([]border, 4)
+	for i := 0; i < 4; i++ {
+		borders[i].Width = b.Width
+		borders[i].Type = b.Type
+		borders[i].Color = b.Color
+	}
+	if b.Left != 0 {
+		borders[0].Width = b.Left
+	}
+	if b.Right != 0 {
+		borders[1].Width = b.Right
+	}
+	if b.Top != 0 {
+		borders[2].Width = b.Top
+	}
+	if b.Bottom != 0 {
+		borders[3].Width = b.Bottom
+	}
+
+	if b.LeftColor != color.Black {
+		borders[0].Color = b.LeftColor
+	}
+	if b.RightColor != color.Black {
+		borders[1].Color = b.RightColor
+	}
+	if b.TopColor != color.Black {
+		borders[2].Color = b.TopColor
+	}
+	if b.BottomColor != color.Black {
+		borders[3].Color = b.BottomColor
+	}
+
+	if b.LeftType != "" {
+		borders[0].Type = b.LeftType
+	}
+	if b.RightType != "" {
+		borders[1].Type = b.RightType
+	}
+	if b.TopType != "" {
+		borders[2].Type = b.TopType
+	}
+	if b.BottomType != "" {
+		borders[3].Type = b.BottomType
+	}
+	var style strings.Builder
+	style.WriteString("display:inline-block;")
+	prefix := []string{"left", "right", "top", "bottom"}
+	for i, v := range borders {
+		if v.Width == 0 && v.Type == "" && v.Color == color.Black {
+			continue
+		}
+		style.WriteString("border-")
+		style.WriteString(prefix[i])
+		style.WriteString(":")
+		if v.Width != 0 {
+			style.WriteString(fmt.Sprintf("%dpx ", v.Width))
+		}
+		if v.Type != "" {
+			style.WriteString(string(v.Type))
+			style.WriteString(" ")
+		}
+		if v.Color != color.Black {
+			style.WriteString(v.Color.String())
+		}
+		style.WriteString(";")
+	}
+	if style.Len() != 0 {
+		ele.Set("style", style.String())
+	}
+	fmt.Println(style.String())
+	packChildren(b, &ele)
+	return ele
+}
+
+func (b Border) getChildren() []Node {
+	return []Node{b.Child}
+}
+
+type BorderType string
+
+const (
+	BorderTypeNone   BorderType = "none"
+	BorderTypeHidden BorderType = "hidden"
+	BorderTypeDotted BorderType = "dotted"
+	BorderTypeDashed BorderType = "dashed"
+	BorderTypeSolid  BorderType = "solid"
+	BorderTypeDouble BorderType = "double"
+	BorderTypeGroove BorderType = "groove"
+	BorderTypeRidge  BorderType = "ridge"
+	BorderTypeInset  BorderType = "inset"
+	BorderTypeOutset BorderType = "outset"
+)
+
+type Padding struct {
+	Child  Node
+	Width  int
+	Left   int
+	Right  int
+	Top    int
+	Bottom int
+}
+
+func (p Padding) pack() dom.JsDomElement {
+	ele := dom.Dom.CreateElement("div")
+
+	padding := make([]int, 4)
+	for i := 0; i < 4; i++ {
+		padding[i] = p.Width
+	}
+	if p.Left != 0 {
+		padding[0] = p.Left
+	}
+	if p.Right != 0 {
+		padding[1] = p.Right
+	}
+	if p.Top != 0 {
+		padding[2] = p.Top
+	}
+	if p.Bottom != 0 {
+		padding[3] = p.Bottom
+	}
+
+	var style strings.Builder
+	style.WriteString("display:inline-block;")
+	prefix := []string{"left", "right", "top", "bottom"}
+	for i, v := range padding {
+		if v == 0 {
+			continue
+		}
+		style.WriteString(fmt.Sprintf("padding-%s: %dpx;", prefix[i], v))
+	}
+	if style.Len() != 0 {
+		ele.Set("style", style.String())
+	}
+	fmt.Println(style.String())
+	packChildren(p, &ele)
+	return ele
+}
+
+func (p Padding) getChildren() []Node {
+	return []Node{p.Child}
 }

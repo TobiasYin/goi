@@ -75,7 +75,7 @@ func (s TextStyle) packStyle() string {
 	if s.FontSize != 0 {
 		res["font-size"] = fmt.Sprintf("%dpx", s.FontSize)
 	}
-	res["color"] = s.FontColor.ToHex()
+	res["color"] = s.FontColor.String()
 	if s.FontFamily != "" {
 		res["font-family"] = s.FontFamily
 	}

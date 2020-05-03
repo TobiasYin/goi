@@ -15,6 +15,10 @@ func main() {
 				node.Text{
 					Content: "New Page",
 				},
+				node.Link{
+					Child: node.Text{Content: "baidu"},
+					Href:  "http://www.baidu.com",
+				},
 				node.BR{},
 				node.Image{Src: "/example.png"},
 				node.BR{},
@@ -75,17 +79,25 @@ func main() {
 					},
 				},
 				this.StatefulChild(Demo),
-				node.Button{
-					Child: node.Text{
-						Content: "To new Page",
-					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
-							node.PushToPage(page2)
+				node.Border{
+					Child: node.Button{
+						Child: node.Text{
+							Content: "To new Page",
+						},
+						Params: node.Params{
+							OnClick: func(e node.Event) {
+								node.PushToPage(page2)
+							},
 						},
 					},
+					Width: 2,
+					Color: color.Red,
+					Type:  node.BorderTypeSolid,
 				},
-				this.StatefulChild(Demo),
+				node.Padding{
+					Width: 10,
+					Child: this.StatefulChild(Demo),
+				},
 				this.StatefulChild(ComponentWithPara("hello")),
 				this.StatefulChild(ComponentWithPara("daisy: ")),
 				this.StatelessChild(StatelessDemo),

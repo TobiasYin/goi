@@ -11,17 +11,25 @@ type Node interface {
 
 type packAble interface {
 	getParam() Params
+	packChildAble
+}
+
+type packChildAble interface {
 	getChildren() []Node
+}
+
+func packChildren(able packChildAble, ele *dom.JsDomElement) {
+	for _, c := range able.getChildren() {
+		//Pack
+		v := c.pack()
+		ele.AppendChild(v)
+	}
 }
 
 func pack(able packAble, name string) dom.JsDomElement {
 	p := able.getParam()
 	e := p.packWithName(name)
-	for _, c := range able.getChildren() {
-		//Pack
-		v := c.pack()
-		e.AppendChild(v)
-	}
+	packChildren(able, &e)
 	return e
 }
 
