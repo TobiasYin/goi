@@ -3,13 +3,13 @@ package node
 import (
 	"context"
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/dom"
+	dom "github.com/TobiasYin/go_web_ui/vdom"
 	"runtime"
 )
 
 type ComponentCreator func(StateArea) *Context
 type ComponentConstructor func(*Context) Node
-type Component func() ComponentConstructor
+type ComponentFunc func() ComponentConstructor
 
 type StateArea interface {
 	SetState(f func())
@@ -17,6 +17,14 @@ type StateArea interface {
 	setStateToFather()
 	doSetState()
 	getContext() context.Context
+}
+
+type StatefulComponent interface {
+	GetConstructor() ComponentConstructor
+}
+
+type StatelessComponent interface {
+	GetNode(*Context) Node
 }
 
 type Context struct {
@@ -48,12 +56,12 @@ func (c *Context) doSetState() {
 	c.setStateToFather()
 }
 
-func (c *Context) StatefulChild(f Component) Node {
-	return ContextKeepWrapper(c, ComponentConstructWrapper(f))(c)
+func (c *Context) StatefulChild(sc StatefulComponent) Node {
+	return ContextKeepWrapper(c, ComponentConstructWrapper(sc.GetConstructor))(c)
 }
 
-func (c *Context) StatelessChild(f ComponentConstructor) Node {
-	return f(c)
+func (c *Context) StatelessChild(sc StatelessComponent) Node {
+	return sc.GetNode(c)
 }
 
 func (c *Context) setNode(node Node) {
@@ -86,12 +94,13 @@ func (c *Context) doPageSetState() {
 
 type Page struct {
 	Context
+	oldDom *dom.JsDomElement
 }
 
 func NewPageEmpty() *Page {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "fatherState", make(map[string]*Context))
-	page := Page{Context{Context: ctx, isPage: true}}
+	page := Page{Context: Context{Context: ctx, isPage: true}}
 	return &page
 }
 
@@ -122,7 +131,7 @@ func ContextKeepWrapper(father *Context, f ComponentCreator) ComponentCreator {
 	return ContextKeepWrapperWithKey(father, f, key)
 }
 
-func ComponentConstructWrapper(f Component) ComponentCreator {
+func ComponentConstructWrapper(f ComponentFunc) ComponentCreator {
 	return func(area StateArea) *Context {
 		newCtx := NewContext(area)
 		c := f()

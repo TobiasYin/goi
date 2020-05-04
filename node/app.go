@@ -2,7 +2,7 @@ package node
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/dom"
+	"github.com/TobiasYin/go_web_ui/vdom"
 	"time"
 )
 
@@ -13,12 +13,10 @@ func NewApp(page *Page) {
 
 func FlashApp() {
 	start := time.Now()
-	app := dom.Dom.GetElementById("app")
-	children := app.GetChildren()
-	for _, child := range children {
-		app.RemoveChild(child)
-	}
-	app.AppendChild(stack.Top().pack())
+	top := stack.Top()
+	d := top.pack()
+	vdom.MergeTwoTree(&d, top.oldDom)
+	top.oldDom = &d
 	end := time.Now()
 	fmt.Printf("Re Render Page, Using: %v\n", end.Sub(start))
 }

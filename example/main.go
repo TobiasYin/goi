@@ -126,7 +126,11 @@ func main() {
 						},
 					},
 				},
-				this.StatefulChild(Demo),
+				this.StatefulChild(StatefulDemo{
+					Value: "Hello ! Stateful AGAIN ",
+					Size:  10,
+					Child: node.Text{Content: "I'm child"},
+				}),
 				node.Border{
 					Child: node.Button{
 						Child: node.Text{
@@ -144,11 +148,20 @@ func main() {
 				},
 				node.Margin{
 					Width: 10,
-					Child: this.StatefulChild(Demo),
+					Child: this.StatefulChild(StatefulDemo{
+						Value: "Hello ! Stateful ",
+						Size:  23,
+						Child: node.Text{Content: "I'm child"},
+					}),
 				},
-				this.StatefulChild(ComponentWithPara("hello")),
-				this.StatefulChild(ComponentWithPara("daisy: ")),
-				this.StatelessChild(StatelessDemo),
+				this.StatelessChild(StatelessDemo{
+					Value: "Tobias",
+				}),
+				this.StatefulChild(StatefulDemo{
+					Value: "Hello ! Stateful AGAIN ",
+					Size:  33,
+					Child: node.Text{Content: "I'm child"},
+				}),
 			},
 		}
 	})
@@ -156,53 +169,34 @@ func main() {
 	<-c
 }
 
-func ComponentWithPara(aaa string) node.Component {
-	return func() node.ComponentConstructor {
-		hello := 0
-		return func(context *node.Context) node.Node {
-			return node.Block{
-				Children: []node.Node{
-					node.Text{
-						Content: aaa,
-					},
-					node.Text{
-						Content: fmt.Sprintf("value: %d", hello),
-					},
-					node.Button{
-						Child: node.Text{
-							Content: "increase",
-						},
-						Params: node.Params{
-							OnClick: func(e node.Event) {
-								context.SetState(func() {
-									hello++
-								})
-							},
-						},
-					},
-				},
-			}
-		}
-	}
+type StatelessDemo struct {
+	Value string
 }
 
-func StatelessDemo(context *node.Context) node.Node {
+func (sc StatelessDemo) GetNode(context *node.Context) node.Node {
 	return node.Block{
 		Children: []node.Node{
 			node.Text{
-				Content: "Stateless\n",
+				Content: sc.Value + " Stateless",
 			},
+			node.BR{},
 		},
 	}
 }
 
-func Demo() node.ComponentConstructor {
-	size := 22
+type StatefulDemo struct {
+	Value string
+	Child node.Node
+	Size  int
+}
+
+func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
+	size := sc.Size
 	return func(this *node.Context) node.Node {
 		return node.Block{
 			Children: []node.Node{
 				node.Text{
-					Content: "Text Component",
+					Content: "Text ComponentFunc " + sc.Value,
 					TextStyle: node.TextStyle{
 						Color:      color.RoyalBlue,
 						FontSize:   size,
@@ -226,6 +220,7 @@ func Demo() node.ComponentConstructor {
 						},
 					},
 				},
+				sc.Child,
 			},
 		}
 	}

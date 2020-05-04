@@ -1,6 +1,6 @@
 package node
 
-import "github.com/TobiasYin/go_web_ui/dom"
+import dom "github.com/TobiasYin/go_web_ui/vdom"
 
 type pageStack struct {
 	stack []*Page
