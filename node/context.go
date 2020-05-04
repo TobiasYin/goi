@@ -142,9 +142,15 @@ func ContextKeepWrapperWithKey(father *Context, f ComponentCreator, key string) 
 
 func ContextKeepWrapper(father *Context, f ComponentCreator) ComponentCreator {
 	funcName, file, line, _ := runtime.Caller(3)
-	fmt.Println(file, line)
 	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
 	return ContextKeepWrapperWithKey(father, f, key)
+}
+
+//根据调用位置生成一个key，请勿在循环中使用！！！因为调用位置相同，循环中可使用更有代表性的key。
+func GenerateKeyWithCallLine() string {
+	funcName, file, line, _ := runtime.Caller(1)
+	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
+	return key
 }
 
 func ComponentConstructWrapper(f ComponentFunc) ComponentCreator {

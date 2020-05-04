@@ -89,6 +89,7 @@ func GetMainPage() *node.Page {
 					},
 				},
 				component.StatefulDemo{
+					Key:   node.GenerateKeyWithCallLine(),
 					Value: "Hello ! Stateful First ",
 					Size:  10,
 					Child: node.Text{Content: "I'm child"},
@@ -126,6 +127,7 @@ func GetMainPage() *node.Page {
 				node.Margin{
 					Width: 10,
 					Child: component.StatefulDemo{
+						Key:   node.GenerateKeyWithCallLine(),
 						Value: "Hello ! Stateful ",
 						Size:  23,
 						Child: node.Text{Content: "I'm child"},
@@ -135,6 +137,7 @@ func GetMainPage() *node.Page {
 					Value: "Tobias",
 				},
 				component.StatefulDemo{
+					Key:   node.GenerateKeyWithCallLine(),
 					Value: "Hello ! Stateful AGAIN ",
 					Size:  33,
 					Child: node.Text{Content: "I'm child"},

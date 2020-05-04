@@ -5,6 +5,7 @@ import (
 	"github.com/TobiasYin/go_web_ui/node"
 	"github.com/TobiasYin/go_web_ui/node/color"
 	"github.com/TobiasYin/go_web_ui/vdom"
+	"strconv"
 )
 
 type StatelessDemo struct {
@@ -27,6 +28,7 @@ func (sc StatelessDemo) Pack(context node.Context) node.Node {
 }
 
 type StatefulDemo struct {
+	Key   string
 	Value string
 	Child node.Widget
 	Size  int
@@ -37,7 +39,13 @@ func (sc StatefulDemo) Pack(context node.Context) node.Node {
 }
 
 func (sc StatefulDemo) GetKey() string {
-	return sc.Value
+	if sc.Key != "" {
+		return sc.Key
+	}
+	if sc.Value != "" {
+		return sc.Value
+	}
+	return strconv.Itoa(sc.Size)
 }
 
 func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {

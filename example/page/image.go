@@ -27,6 +27,7 @@ func (i imagePage)GetPage() *node.Page {
 					Href:  "http://www.baidu.com",
 				},
 				component.StatefulDemo{
+					Key: node.GenerateKeyWithCallLine(),
 					Value: "In Page",
 				},
 				node.BR{},
