@@ -10,14 +10,14 @@ import (
 
 func GetMainPage() *node.Page {
 	size := 22
-	return node.NewPage(func(this *node.Context) node.Node {
+	return node.NewPage(func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
-			Children: []node.Node{
+			Children: []node.Widget{
 				node.Row{
 					Expand:    true,
 					Alignment: node.Center,
-					Children: []node.Node{
+					Children: []node.Widget{
 						node.Expanded{
 							Flex: 1,
 							Child: node.Inline{
@@ -29,7 +29,7 @@ func GetMainPage() *node.Page {
 										},
 									},
 								},
-								Children: []node.Node{
+								Children: []node.Widget{
 									node.Text{
 										Content: "Hello",
 									},
@@ -40,7 +40,7 @@ func GetMainPage() *node.Page {
 							Left: 10,
 						},
 						node.Inline{
-							Children: []node.Node{
+							Children: []node.Widget{
 								node.Text{
 									Content: "World",
 								},
@@ -49,7 +49,7 @@ func GetMainPage() *node.Page {
 					},
 				},
 				node.Inline{
-					Children: []node.Node{
+					Children: []node.Widget{
 						node.Text{
 							Content: "aaa",
 							TextStyle: node.TextStyle{
@@ -88,11 +88,11 @@ func GetMainPage() *node.Page {
 						},
 					},
 				},
-				this.StatefulChild(component.StatefulDemo{
-					Value: "Hello ! Stateful AGAIN ",
+				component.StatefulDemo{
+					Value: "Hello ! Stateful First ",
 					Size:  10,
 					Child: node.Text{Content: "I'm child"},
-				}),
+				},
 				node.Border{
 					Child: node.Button{
 						Child: node.Text{
@@ -125,20 +125,20 @@ func GetMainPage() *node.Page {
 				},
 				node.Margin{
 					Width: 10,
-					Child: this.StatefulChild(component.StatefulDemo{
+					Child: component.StatefulDemo{
 						Value: "Hello ! Stateful ",
 						Size:  23,
 						Child: node.Text{Content: "I'm child"},
-					}),
+					},
 				},
-				this.StatelessChild(component.StatelessDemo{
+				component.StatelessDemo{
 					Value: "Tobias",
-				}),
-				this.StatefulChild(component.StatefulDemo{
+				},
+				component.StatefulDemo{
 					Value: "Hello ! Stateful AGAIN ",
 					Size:  33,
 					Child: node.Text{Content: "I'm child"},
-				}),
+				},
 			},
 		}
 	})

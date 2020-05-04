@@ -11,6 +11,7 @@ import (
 type Text struct {
 	Content   string
 	TextStyle TextStyle
+	_context
 }
 
 func (t Text) pack() dom.JsDomElement {
@@ -22,6 +23,15 @@ func (t Text) pack() dom.JsDomElement {
 		father.Set("style", style)
 	}
 	return father
+}
+
+func (t Text) getContext() Context {
+	return t.Context
+}
+
+func (t Text) Pack(ctx Context) Node {
+	t._context.Context = ctx
+	return t
 }
 
 type FontWeight int

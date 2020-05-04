@@ -5,14 +5,20 @@ import dom "github.com/TobiasYin/go_web_ui/vdom"
 type Image struct {
 	Params
 	Src string
+	_context
 }
 
 func (i Image) pack() dom.JsDomElement {
-	e := pack(i, "img")
+	e := pack(i, "img", i.getContext())
 	e.Set("src", i.Src)
 	return e
 }
 
-func (i Image) getChildren() []Node {
-	return []Node{}
+func (i Image) getChildren() []Widget {
+	return []Widget{}
+}
+
+func (i Image) Pack(ctx Context) Node {
+	i._context.Context = ctx
+	return i
 }
