@@ -41,13 +41,13 @@ type Params struct {
 	Class       []string
 	Value       string
 	Placeholder string
-	OnClick     EventCallBack
-	OnInput     EventCallBack
-	OnChange    EventCallBack
-	OnFocus     EventCallBack
-	OnBlur      EventCallBack
-	OnKeyDown   EventCallBack
-	OnKeyUp     EventCallBack
+	OnClick     dom.EventCallBack
+	OnInput     dom.EventCallBack
+	OnChange    dom.EventCallBack
+	OnFocus     dom.EventCallBack
+	OnBlur      dom.EventCallBack
+	OnKeyDown   dom.EventCallBack
+	OnKeyUp     dom.EventCallBack
 }
 
 func (e Params) getParam() Params {
@@ -64,25 +64,25 @@ func (e Params) packWithName(name string) dom.JsDomElement {
 		ele.Set("className", strings.Join(e.Class, " "))
 	}
 	if e.OnClick != nil {
-		ele.Set("onclick", wrapEventCallBack(e.OnClick))
+		ele.Set("onclick", dom.WrapEventCallBack(e.OnClick))
 	}
 	if e.OnInput != nil {
-		ele.Set("oninput", wrapEventCallBack(e.OnInput))
+		ele.Set("oninput", dom.WrapEventCallBack(e.OnInput))
 	}
 	if e.OnChange != nil {
-		ele.Set("onchange", wrapEventCallBack(e.OnChange))
+		ele.Set("onchange", dom.WrapEventCallBack(e.OnChange))
 	}
 	if e.OnFocus != nil {
-		ele.Set("onfocus", wrapEventCallBack(e.OnFocus))
+		ele.Set("onfocus", dom.WrapEventCallBack(e.OnFocus))
 	}
 	if e.OnBlur != nil {
-		ele.Set("onblur", wrapEventCallBack(e.OnBlur))
+		ele.Set("onblur", dom.WrapEventCallBack(e.OnBlur))
 	}
 	if e.OnKeyDown != nil {
-		ele.Set("onkeydown", wrapEventCallBack(e.OnKeyDown))
+		ele.Set("onkeydown", dom.WrapEventCallBack(e.OnKeyDown))
 	}
 	if e.OnKeyUp != nil {
-		ele.Set("onkeyup", wrapEventCallBack(e.OnKeyUp))
+		ele.Set("onkeyup", dom.WrapEventCallBack(e.OnKeyUp))
 	}
 	return ele
 }

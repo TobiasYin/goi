@@ -4,15 +4,21 @@ import (
 	"fmt"
 	"github.com/TobiasYin/go_web_ui/node"
 	"github.com/TobiasYin/go_web_ui/node/color"
+	"github.com/TobiasYin/go_web_ui/vdom"
 )
 
-func main() {
-	c := make(chan struct{})
-	size := 22
-	page2 := node.NewPage(func(this *node.Context) node.Node {
+type imagePage struct {
+	title string
+}
+
+func (i imagePage)GetPage() *node.Page {
+	return node.NewPage(func(this *node.Context) node.Node {
 		return node.Column{
 			Alignment: node.Right,
 			Children: []node.Node{
+				node.Text{
+					Content: "Page Title: " + i.title,
+				},
 				node.Text{
 					Content: "New Page",
 				},
@@ -40,13 +46,26 @@ func main() {
 						Content: "back",
 					},
 					Params: node.Params{
-						OnClick: func(e node.Event) {
+						OnClick: func(e vdom.Event) {
 							node.BackToLastPage()
 						},
 					},
 				},
 			},
 		}
+	})
+}
+
+func main() {
+	c := make(chan struct{})
+	size := 22
+	node.RegisterRoute("/image", func(m map[string]interface{}) node.PageGetter {
+		n, ok := m["title"]
+		title := ""
+		if ok {
+			title, _ = n.(string)
+		}
+		return imagePage{title: title}
 	})
 	page := node.NewPage(func(this *node.Context) node.Node {
 		return node.Column{
@@ -105,7 +124,7 @@ func main() {
 						Content: "Click to add 1",
 					},
 					Params: node.Params{
-						OnClick: func(e node.Event) {
+						OnClick: func(e vdom.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size++
@@ -118,7 +137,7 @@ func main() {
 						Content: "Reset",
 					},
 					Params: node.Params{
-						OnClick: func(e node.Event) {
+						OnClick: func(e vdom.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size = 22
@@ -137,8 +156,8 @@ func main() {
 							Content: "To new Page",
 						},
 						Params: node.Params{
-							OnClick: func(e node.Event) {
-								node.PushToPage(page2)
+							OnClick: func(e vdom.Event) {
+								_ = node.PushByPath("/image", map[string]interface{}{"title": "push by page1"})
 							},
 						},
 					},
@@ -212,7 +231,7 @@ func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 						Content: "add",
 					},
 					Params: node.Params{
-						OnClick: func(e node.Event) {
+						OnClick: func(e vdom.Event) {
 							this.SetState(func() {
 								size += 1
 								fmt.Printf("Push Button, size:%v\n", size)

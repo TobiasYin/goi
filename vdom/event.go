@@ -1,4 +1,4 @@
-package node
+package vdom
 
 import "syscall/js"
 
@@ -13,7 +13,7 @@ func createEventWithJsValue(v js.Value) Event {
 	return Event{}
 }
 
-func wrapEventCallBack(cb EventCallBack) js.Func {
+func WrapEventCallBack(cb EventCallBack) js.Func {
 	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		var e Event
 		if len(args) > 0 {

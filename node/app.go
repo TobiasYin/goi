@@ -6,12 +6,47 @@ import (
 	"time"
 )
 
+func init() {
+	allowRerender <- 1
+	go renderLoop()
+}
+
+var (
+	allowRerender = make(chan int, 1)
+	needRerender  = true
+)
+
 func NewApp(page *Page) {
 	stack.Add(page)
 	FlashApp()
 }
 
+func renderLoop() {
+	for {
+		time.Sleep(time.Millisecond * 50)
+		if !needRerender {
+			continue
+		}
+		select {
+		case <-allowRerender:
+			go func() {
+				needRerender = false
+				rerender()
+				select {
+				case allowRerender <- 1:
+				default:
+				}
+			}()
+		default:
+		}
+	}
+}
+
 func FlashApp() {
+	needRerender = true
+}
+
+func rerender() {
 	start := time.Now()
 	top := stack.Top()
 	d := top.pack()
@@ -21,12 +56,3 @@ func FlashApp() {
 	fmt.Printf("Re Render Page, Using: %v\n", end.Sub(start))
 }
 
-func PushToPage(page *Page) {
-	stack.Add(page)
-	FlashApp()
-}
-
-func BackToLastPage() {
-	stack.Pop()
-	FlashApp()
-}

@@ -1,6 +1,9 @@
 package node
 
-import dom "github.com/TobiasYin/go_web_ui/vdom"
+import (
+	"fmt"
+	dom "github.com/TobiasYin/go_web_ui/vdom"
+)
 
 type pageStack struct {
 	stack []*Page
@@ -8,15 +11,20 @@ type pageStack struct {
 }
 
 var (
-	router map[string]*Page
+	router map[string]PathPage
 	stack  pageStack
 )
 
 func init() {
-	router = make(map[string]*Page)
+	router = make(map[string]PathPage)
 }
 
-func RegisterRoute(path string, page *Page) {
+func RegisterRoute(path string, page PathPage) {
+	if len(path) == 0{
+		path = "/"
+	}else if path[0] != '/'{
+		path = "/" + path
+	}
 	router[path] = page
 }
 
@@ -40,3 +48,33 @@ func (p *pageStack) Add(page *Page) {
 func (p *pageStack) pack() dom.JsDomElement {
 	return p.Top().pack()
 }
+
+
+func PushToPage(page *Page) {
+	stack.Add(page)
+	if page.oldDom != nil {
+		dom.Display(page.oldDom)
+	}
+	FlashApp()
+}
+
+func BackToLastPage() {
+	stack.Pop()
+	dom.Display(stack.Top().oldDom)
+	FlashApp()
+}
+
+func PushByPath(path string, arg map[string]interface{}) error {
+	page, ok := router[path]
+	if !ok {
+		return fmt.Errorf("unkonw page")
+	}
+	PushToPage(page(arg).GetPage())
+	return nil
+}
+
+type PageGetter interface {
+	GetPage() *Page
+}
+
+type PathPage func(map[string]interface{}) PageGetter

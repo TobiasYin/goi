@@ -2,12 +2,33 @@ package vdom
 
 import (
 	"github.com/TobiasYin/go_web_ui/dom"
+	"syscall/js"
 )
-var Root =dom.Dom.GetElementById("app")
+
+var Root = dom.Dom.GetElementById("app")
 var Dom = Document{}
 
 func equal(e1 JsDomElement, e2 JsDomElement) bool {
-	// TODO 实现判断两个是否相等
+	if e1.Tag != e2.Tag {
+		return false
+	}
+	if e1.Content != e2.Content {
+		return false
+	}
+	if len(e1.Value) != len(e2.Value) {
+		return false
+	}
+	if len(e1.Children) != len(e2.Children) {
+		return false
+	}
+	for k, v := range e1.Value {
+		if _, ok := v.v.(js.Func); ok {
+			continue
+		}
+		if e2.Value[k] != v {
+			return false
+		}
+	}
 	return true
 }
 
@@ -26,7 +47,7 @@ type JsDomElement struct {
 	Tag      string
 	Content  string
 	Value    map[string]Value
-	Children []JsDomElement
+	Children []*JsDomElement
 	RealDom  *dom.JsDomElement
 }
 
@@ -36,7 +57,7 @@ func NewJsDomElement(tag string) JsDomElement {
 
 func (e JsDomElement) RemoveChild(c JsDomElement) {
 	for i := 0; i < len(e.Children); i++ {
-		if equal(c, e.Children[i]) {
+		if equal(c, *e.Children[i]) {
 			e.Children = append(e.Children[:i], e.Children[i+1:]...)
 			return
 		}
@@ -70,7 +91,7 @@ func (e *JsDomElement) SetValue(v interface{}) {
 }
 
 func (e *JsDomElement) AppendChild(n JsDomElement) {
-	e.Children = append(e.Children, n)
+	e.Children = append(e.Children, &n)
 }
 
 type Document struct {
@@ -107,19 +128,48 @@ func (e *JsDomElement) GetRealDom() dom.JsDomElement {
 	return ele
 }
 
-func MergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement)  {
+func MergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
+	rebuild := func() {
+		Display(newTree)
+	}
 	if oldTree == nil {
-		children := Root.GetChildren()
-		for _, child := range children {
-			Root.RemoveChild(child)
+		rebuild()
+	} else {
+		if !equal(*newTree, *oldTree) {
+			rebuild()
+			return
 		}
-		Root.AppendChild(newTree.GetRealDom())
-	}else {
-		//TODO 实现diff
-		children := Root.GetChildren()
-		for _, child := range children {
-			Root.RemoveChild(child)
+		mergeTwoTree(newTree, oldTree)
+	}
+}
+
+func Display(tree *JsDomElement)  {
+	children := Root.GetChildren()
+	for _, child := range children {
+		Root.RemoveChild(child)
+	}
+	Root.AppendChild(tree.GetRealDom())
+}
+
+func mergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
+	length := len(newTree.Children)
+	for k, v := range newTree.Value {
+		if f, ok := v.v.(EventCallBack); ok {
+			oldTree.RealDom.Set(k, WrapEventCallBack(f))
 		}
-		Root.AppendChild(newTree.GetRealDom())
+	}
+	for i, c := range newTree.Children {
+		oc := oldTree.Children[i]
+		if !equal(*oc, *c) {
+			oldTree.RealDom.RemoveChild(oc.GetRealDom())
+			if i == length-1 {
+				oldTree.RealDom.AppendChild(c.GetRealDom())
+			} else {
+				oldTree.RealDom.InsertBefore(c.GetRealDom(), oldTree.Children[i+1].GetRealDom())
+			}
+		} else {
+			c.RealDom = oc.RealDom
+			mergeTwoTree(c, oc)
+		}
 	}
 }

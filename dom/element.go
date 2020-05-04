@@ -45,6 +45,10 @@ func (e JsDomElement) RemoveChild(c JsDomElement) {
 	e.call(c.Value)
 }
 
+func (e JsDomElement) InsertBefore(c JsDomElement, o JsDomElement) {
+	e.call(c.Value, o.Value)
+}
+
 func (e JsDomElement) GetChildren() []JsDomElement {
 	res := e.Get("children")
 	es := make([]JsDomElement, res.Length())
