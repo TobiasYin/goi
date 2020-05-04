@@ -5,8 +5,6 @@ import (
 	"github.com/TobiasYin/go_web_ui/node"
 )
 
-func main() {
-	c := make(chan struct{})
-	node.NewApp(pages.GetMainPage())
-	<-c
+func init() {
+	node.RegisterRoute("/image", pages.IntoImage)
 }
