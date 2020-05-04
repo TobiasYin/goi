@@ -25,6 +25,7 @@ type Style struct {
 	Outline                Outline
 	Padding                Padding
 	// TODO 填充CSS style属性
+	// TODO 旋转
 }
 
 func (s Style) packStyle() string {
