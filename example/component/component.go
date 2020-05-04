@@ -11,9 +11,9 @@ type StatelessDemo struct {
 	Value string
 }
 
-func (sc StatelessDemo) GetNode(context *node.Context) node.Node {
+func (sc StatelessDemo) GetNode(context *node.Context) node.Widget {
 	return node.Block{
-		Children: []node.Node{
+		Children: []node.Widget{
 			node.Text{
 				Content: sc.Value + " Stateless",
 			},
@@ -22,17 +22,29 @@ func (sc StatelessDemo) GetNode(context *node.Context) node.Node {
 	}
 }
 
+func (sc StatelessDemo) Pack(context node.Context) node.Node {
+	return node.PackStateless(sc, context)
+}
+
 type StatefulDemo struct {
 	Value string
-	Child node.Node
+	Child node.Widget
 	Size  int
+}
+
+func (sc StatefulDemo) Pack(context node.Context) node.Node {
+	return node.PackStateful(sc, context)
+}
+
+func (sc StatefulDemo) GetKey() string {
+	return sc.Value
 }
 
 func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 	size := sc.Size
-	return func(this *node.Context) node.Node {
+	return func(this *node.Context) node.Widget {
 		return node.Block{
-			Children: []node.Node{
+			Children: []node.Widget{
 				node.Text{
 					Content: "Text ComponentFunc " + sc.Value,
 					TextStyle: node.TextStyle{
@@ -63,4 +75,3 @@ func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 		}
 	}
 }
-

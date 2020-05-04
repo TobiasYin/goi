@@ -12,10 +12,10 @@ type imagePage struct {
 }
 
 func (i imagePage)GetPage() *node.Page {
-	return node.NewPage(func(this *node.Context) node.Node {
+	return node.NewPage(func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Right,
-			Children: []node.Node{
+			Children: []node.Widget{
 				node.Text{
 					Content: "Page Title: " + i.title,
 				},
@@ -26,9 +26,9 @@ func (i imagePage)GetPage() *node.Page {
 					Child: node.Text{Content: "baidu"},
 					Href:  "http://www.baidu.com",
 				},
-				this.StatefulChild(component.StatefulDemo{
+				component.StatefulDemo{
 					Value: "In Page",
-				}),
+				},
 				node.BR{},
 				node.Image{
 					Src: "/example.png",

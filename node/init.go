@@ -5,8 +5,13 @@ import (
 	"strings"
 )
 
+type Widget interface {
+	Pack(ctx Context) Node
+}
+
 type Node interface {
 	pack() dom.JsDomElement
+	getContext() Context
 }
 
 type packAble interface {
@@ -15,24 +20,24 @@ type packAble interface {
 }
 
 type packChildAble interface {
-	getChildren() []Node
+	getChildren() []Widget
 }
 
-func packChildren(able packChildAble, ele *dom.JsDomElement) {
+func packChildren(able packChildAble, ele *dom.JsDomElement, ctx Context) {
 	for _, c := range able.getChildren() {
 		if c == nil{
 			continue
 		}
 		//Pack
-		v := c.pack()
+		v := c.Pack(ctx).pack()
 		ele.AppendChild(v)
 	}
 }
 
-func pack(able packAble, name string) dom.JsDomElement {
+func pack(able packAble, name string, ctx Context) dom.JsDomElement {
 	p := able.getParam()
 	e := p.packWithName(name)
-	packChildren(able, &e)
+	packChildren(able, &e, ctx)
 	return e
 }
 

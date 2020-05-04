@@ -7,96 +7,143 @@ import (
 	"strings"
 )
 
-type Inline struct {
-	Params
-	Children []Node
+type _context struct {
+	Context
 }
 
-func (d Inline) getChildren() []Node {
+func (c _context) getContext() Context {
+	return c.Context
+}
+
+type Inline struct {
+	Params
+	Children []Widget
+	_context
+}
+
+func (d Inline) getChildren() []Widget {
 	return d.Children
 }
 
 func (d Inline) pack() dom.JsDomElement {
-	ele := pack(d, "div")
+	ele := pack(d, "div", d.getContext())
 	ele.Set("className", ele.Get("className").String()+" go-ui-inline-div")
 	return ele
 }
 
+func (d Inline) Pack(ctx Context) Node {
+	d._context.Context = ctx
+	return d
+}
+
 type Block struct {
 	Params
-	Children []Node
+	_context
+	Children []Widget
 }
 
-func (d Block) getChildren() []Node {
-	return d.Children
+func (b Block) getChildren() []Widget {
+	return b.Children
 }
 
-func (d Block) pack() dom.JsDomElement {
-	return pack(d, "div")
+func (b Block) pack() dom.JsDomElement {
+	return pack(b, "div", b.getContext())
+}
+
+func (b Block) Pack(ctx Context) Node {
+	b._context.Context = ctx
+	return b
 }
 
 type P struct {
 	Params
-	Children []Node
+	_context
+	Children []Widget
 }
 
-func (p P) getChildren() []Node {
+func (p P) getChildren() []Widget {
 	return p.Children
 }
 
 func (p P) pack() dom.JsDomElement {
-	return pack(p, "p")
+	return pack(p, "p", p.Context)
+}
+func (p P) Pack(ctx Context) Node {
+	p._context.Context = ctx
+	return p
 }
 
 type Link struct {
 	Params
-	Child Node
+	_context
+	Child Widget
 	Href  string
 }
 
-func (l Link) getChildren() []Node {
-	return []Node{l.Child}
+func (l Link) getChildren() []Widget {
+	return []Widget{l.Child}
 }
 
 func (l Link) pack() dom.JsDomElement {
-	ele := pack(l, "a")
+	ele := pack(l, "a", l.getContext())
 	ele.Set("href", l.Href)
 	return ele
 }
 
+func (l Link) Pack(ctx Context) Node {
+	l._context.Context = ctx
+	return l
+}
+
 type Input struct {
+	_context
 	Params
 }
 
-func (i Input) getChildren() []Node {
-	return []Node{}
+func (i Input) getChildren() []Widget {
+	return []Widget{}
 }
 
 func (i Input) pack() dom.JsDomElement {
-	return pack(i, "input")
+	return pack(i, "input", i.getContext())
+}
+func (i Input) Pack(ctx Context) Node {
+	i._context.Context = ctx
+	return i
 }
 
 type Button struct {
 	Params
-	Child Node
+	_context
+	Child Widget
 }
 
-func (b Button) getChildren() []Node {
-	return []Node{b.Child}
+func (b Button) getChildren() []Widget {
+	return []Widget{b.Child}
 }
 
 func (b Button) pack() dom.JsDomElement {
-	return pack(b, "button")
+	return pack(b, "button", b.getContext())
+}
+func (b Button) Pack(ctx Context) Node {
+	b._context.Context = ctx
+	return b
 }
 
-type BR struct{}
+type BR struct {
+	_context
+}
 
 func (br BR) pack() dom.JsDomElement {
 	return dom.Dom.CreateElement("br")
 }
+func (br BR) Pack(ctx Context) Node {
+	br._context.Context = ctx
+	return br
+}
 
 type Border struct {
-	Child       Node
+	Child       Widget
 	Width       int
 	Left        int
 	Right       int
@@ -112,6 +159,7 @@ type Border struct {
 	RightColor  color.Color
 	TopColor    color.Color
 	BottomColor color.Color
+	_context
 }
 type border struct {
 	Width int
@@ -201,12 +249,16 @@ func (b Border) pack() dom.JsDomElement {
 	if len(style) != 0 {
 		ele.Set("style", style)
 	}
-	packChildren(b, &ele)
+	packChildren(b, &ele, b.getContext())
 	return ele
 }
 
-func (b Border) getChildren() []Node {
-	return []Node{b.Child}
+func (b Border) getChildren() []Widget {
+	return []Widget{b.Child}
+}
+func (b Border) Pack(ctx Context) Node {
+	b._context.Context = ctx
+	return b
 }
 
 type BorderType string
@@ -225,12 +277,13 @@ const (
 )
 
 type Margin struct {
-	Child  Node
+	Child  Widget
 	Width  int
 	Left   int
 	Right  int
 	Top    int
 	Bottom int
+	_context
 }
 
 func (m Margin) pack() dom.JsDomElement {
@@ -265,25 +318,32 @@ func (m Margin) pack() dom.JsDomElement {
 	if style.Len() != 0 {
 		ele.Set("style", style.String())
 	}
-	packChildren(m, &ele)
+	packChildren(m, &ele, m.getContext())
 	return ele
 }
 
-func (m Margin) getChildren() []Node {
-	return []Node{m.Child}
+func (m Margin) getChildren() []Widget {
+	return []Widget{m.Child}
 }
+
+func (b Margin) Pack(ctx Context) Node {
+	b._context.Context = ctx
+	return b
+}
+
 
 type Column struct {
-	Children  []Node
+	Children  []Widget
 	Alignment Position
+	_context
 }
 
-func (c Column) getChildren() []Node {
+func (c Column) getChildren() []Widget {
 	alignment := c.Alignment
 	if alignment == "" {
 		alignment = Left
 	}
-	res := make([]Node, len(c.Children))
+	res := make([]Widget, len(c.Children))
 	for i, child := range c.Children {
 		res[i] = Block{
 			Params: Params{
@@ -291,7 +351,7 @@ func (c Column) getChildren() []Node {
 					TextAlign: alignment,
 				},
 			},
-			Children: []Node{
+			Children: []Widget{
 				child,
 			},
 		}
@@ -301,18 +361,23 @@ func (c Column) getChildren() []Node {
 
 func (c Column) pack() dom.JsDomElement {
 	ele := dom.Dom.CreateElement("div")
-	packChildren(c, &ele)
+	packChildren(c, &ele, c.getContext())
 	ele.Set("className", ele.Get("className").String()+" go-ui-column")
 	return ele
+}
+func (c Column) Pack(ctx Context) Node {
+	c._context.Context = ctx
+	return c
 }
 
 type Row struct {
 	Alignment Position
 	Expand    bool
-	Children  []Node
+	Children  []Widget
+	_context
 }
 
-func (r Row) getChildren() []Node {
+func (r Row) getChildren() []Widget {
 	return r.Children
 }
 
@@ -324,18 +389,23 @@ func (r Row) pack() dom.JsDomElement {
 		style += "display:flex;"
 	}
 	ele.Set("style", style)
-	packChildren(r, &ele)
+	packChildren(r, &ele, r.getContext())
 	return ele
+}
+func (r Row) Pack(ctx Context) Node {
+	r._context.Context = ctx
+	return r
 }
 
 type Expanded struct {
 	Flex  int
-	Child Node
+	Child Widget
+	_context
 }
 
-func (e Expanded) getChildren() []Node {
+func (e Expanded) getChildren() []Widget {
 
-	return []Node{e.Child}
+	return []Widget{e.Child}
 }
 
 func (e Expanded) pack() dom.JsDomElement {
@@ -345,8 +415,13 @@ func (e Expanded) pack() dom.JsDomElement {
 				FlexGrow: e.Flex,
 			},
 		},
-		Children: []Node{
+		Children: []Widget{
 			e.Child,
 		},
 	}.pack()
+}
+
+func (e Expanded) Pack(ctx Context) Node {
+	e._context.Context = ctx
+	return e
 }

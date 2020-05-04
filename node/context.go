@@ -8,34 +8,45 @@ import (
 )
 
 type ComponentCreator func(StateArea) *Context
-type ComponentConstructor func(*Context) Node
+type ComponentConstructor func(*Context) Widget
 type ComponentFunc func() ComponentConstructor
 
 type StateArea interface {
 	SetState(f func())
-	setNode(node Node)
+	setNode(node Widget)
 	setStateToFather()
 	doSetState()
-	getContext() context.Context
+	getContext() Context
 }
 
-type StatefulComponent interface {
+type StatefulWidget interface {
+	Widget
 	GetConstructor() ComponentConstructor
+	GetKey() string
 }
 
-type StatelessComponent interface {
-	GetNode(*Context) Node
+type StatelessWidget interface {
+	Widget
+	GetNode(*Context) Widget
+}
+
+func PackStateful(sf StatefulWidget, ctx Context) Node {
+	return ContextKeepWrapperWithKey(&ctx, ComponentConstructWrapper(sf.GetConstructor), sf.GetKey())(&ctx)
+}
+
+func PackStateless(sl StatelessWidget, ctx Context) Node {
+	return sl.GetNode(&ctx).Pack(ctx)
 }
 
 type Context struct {
 	Context context.Context
-	GetNode func(*Context) Node
-	node    Node
+	GetNode func(*Context) Widget
+	node    Widget
 	isPage  bool
 }
 
 func NewContext(area StateArea) *Context {
-	newCtx := context.WithValue(area.getContext(), "father", area)
+	newCtx := context.WithValue(area.getContext().Context, "father", area)
 	newCtx = context.WithValue(newCtx, "fatherState", make(map[string]*Context))
 	return &Context{
 		Context: newCtx,
@@ -56,20 +67,25 @@ func (c *Context) doSetState() {
 	c.setStateToFather()
 }
 
-func (c *Context) StatefulChild(sc StatefulComponent) Node {
+
+func (c *Context) Pack(ctx Context) Node {
+	return c.GetNode(c).Pack(*c)
+}
+
+func (c *Context) StatefulChild(sc StatefulWidget) Node {
 	return ContextKeepWrapper(c, ComponentConstructWrapper(sc.GetConstructor))(c)
 }
 
-func (c *Context) StatelessChild(sc StatelessComponent) Node {
-	return sc.GetNode(c)
+func (c *Context) StatelessChild(sc StatelessWidget) Node {
+	return sc.GetNode(c).Pack(*c)
 }
 
-func (c *Context) setNode(node Node) {
+func (c *Context) setNode(node Widget) {
 	c.node = node
 }
 
-func (c *Context) getContext() context.Context {
-	return c.Context
+func (c *Context) getContext() Context {
+	return *c
 }
 
 func (c *Context) setStateToFather() {
@@ -79,12 +95,11 @@ func (c *Context) setStateToFather() {
 	}
 }
 
-func (c Context) pack() dom.JsDomElement {
+func (c *Context) pack() dom.JsDomElement {
 	if c.node == nil {
-		c.node = c.GetNode(&c)
-
+		c.node = c.GetNode(c)
 	}
-	return c.node.pack()
+	return c.node.Pack(*c).pack()
 }
 
 func (c *Context) doPageSetState() {
@@ -126,7 +141,8 @@ func ContextKeepWrapperWithKey(father *Context, f ComponentCreator, key string) 
 }
 
 func ContextKeepWrapper(father *Context, f ComponentCreator) ComponentCreator {
-	funcName, file, line, _ := runtime.Caller(2)
+	funcName, file, line, _ := runtime.Caller(3)
+	fmt.Println(file, line)
 	key := fmt.Sprintf("%v,%v,%d", funcName, file, line)
 	return ContextKeepWrapperWithKey(father, f, key)
 }
