@@ -71,6 +71,9 @@ func initPush()  {
 	} else {
 		path = hash[1:]
 	}
+	if path == "/" {
+		return
+	}
 	pushWithHash(path)
 }
 
@@ -113,6 +116,9 @@ func (p *pageStack) pack() dom.JsDomElement {
 }
 
 func PushToPage(page *Page) {
+	if page.Title != "" {
+		rdom.Dom.SetTitle(page.Title)
+	}
 	stack.Add(page)
 	if page.oldDom != nil {
 		dom.Display(page.oldDom)
@@ -123,6 +129,9 @@ func PushToPage(page *Page) {
 func BackToLastPage() {
 	stack.Pop()
 	top := stack.Top()
+	if top.Title != "" {
+		rdom.Dom.SetTitle(top.Title)
+	}
 	setHash(top.path)
 	dom.Display(top.oldDom)
 	FlashApp()

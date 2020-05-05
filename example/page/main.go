@@ -10,22 +10,10 @@ import (
 
 func GetMainPage() *node.Page {
 	size := 22
-	return node.NewPage(func(this *node.Context) node.Widget {
+	return node.NewPage("Main", func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
 			Children: []node.Widget{
-				node.Link{
-					Child: node.Text{Content: "#1"},
-					Href: "#1",
-				},
-				node.Link{
-					Child: node.Text{Content: "#2"},
-					Href: "#2",
-				},
-				node.Link{
-					Child: node.Text{Content: "#3"},
-					Href: "#3",
-				},
 				node.Row{
 					Expand:    true,
 					Alignment: node.Center,

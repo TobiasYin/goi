@@ -11,7 +11,7 @@ type imagePage struct {
 }
 
 func (i imagePage)GetPage() *node.Page {
-	return node.NewPage(func(this *node.Context) node.Widget {
+	return node.NewPage("Image", func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
 			Children: []node.Widget{

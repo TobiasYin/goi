@@ -28,8 +28,7 @@ func NewApp(page *Page) {
 		return main{page}
 	})
 	page.path = "/"
-	stack.Add(page)
-	FlashApp()
+	PushToPage(page)
 	initPush()
 	//在这里等待，防止wasm退出。
 	c := make(chan struct{})

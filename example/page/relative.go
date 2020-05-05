@@ -8,7 +8,7 @@ type relativePage struct {
 }
 
 func (r relativePage) GetPage() *node.Page {
-	return node.NewPage(func(this *node.Context) node.Widget {
+	return node.NewPage("Relative", func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
 			Children: []node.Widget{

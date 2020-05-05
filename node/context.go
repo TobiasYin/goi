@@ -110,6 +110,7 @@ func (c *Context) doPageSetState() {
 type Page struct {
 	path string
 	Context
+	Title string
 	oldDom *dom.JsDomElement
 }
 
@@ -120,9 +121,10 @@ func NewPageEmpty() *Page {
 	return &page
 }
 
-func NewPage(getNode ComponentConstructor) *Page {
+func NewPage(title string,getNode ComponentConstructor) *Page {
 	page := NewPageEmpty()
 	page.GetNode = getNode
+	page.Title = title
 	return page
 }
 
