@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"time"
 )
 
 var repo = flag.String("repo", "", "Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
@@ -26,28 +27,36 @@ func getProjectPath() string {
 	return path
 }
 
+func build(projectPath string)  {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("powershell.exe", "-c", fmt.Sprintf("cd %s; %s/build.sh", projectPath, projectPath))
+		cmd.Stderr = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		cmd := exec.Command("/bin/bash", "-c",  fmt.Sprintf("cd %s && %s/build.sh", projectPath, projectPath))
+		cmd.Stderr = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+	}
+}
+
 func runMode() {
 	projectPath := getProjectPath()
 	if !server.Exists(projectPath) {
 		log.Fatalln("project not exist")
 	}
-	if runtime.GOOS == "windows" {
-		cmd := exec.Command("powershell.exe", "-c", "cd "+projectPath+" ; "+projectPath+"/build.sh")
-		cmd.Stderr = os.Stdout
-		err := cmd.Run()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else {
-		cmd := exec.Command("/bin/bash", "-c", "cd "+projectPath+" && "+projectPath+"/build.sh")
-		cmd.Stderr = os.Stdout
-		err := cmd.Run()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}
+	build(projectPath)
 	fmt.Println(*port)
-	server.Serve(*port, projectPath+"/output/")
+	go server.Serve(*port, projectPath+"/output/")
+	go func() {
+		time.Sleep(time.Second * 5)
+		build(projectPath)
+	}()
 }
 
 func newMode() {
@@ -74,7 +83,7 @@ func newMode() {
 func create(base string, f inline.File) {
 	name := fmt.Sprintf("%s/%s", base, f.Name)
 	if f.IsDir {
-		err := os.Mkdir(name, os.ModePerm)
+		err := os.MkdirAll(name, os.ModePerm)
 		if err != nil {
 			log.Fatalf("error in create : %s\n", name)
 		}
