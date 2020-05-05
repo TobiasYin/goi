@@ -24,6 +24,23 @@ func (m main) GetPage() *Page {
 	return m.page
 }
 func NewApp(page *Page) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("panic found! try to recover! %v\n", r)
+		}
+		if stack.size == 0 {
+			go NewApp(page)
+			return
+		}
+		newStack := pageStack{}
+		for stack.size > 0 {
+			newStack.Add(stack.Pop())
+		}
+		go NewApp(newStack.Pop())
+		for newStack.size > 0 {
+			PushToPage(newStack.Pop())
+		}
+	}()
 	RegisterRoute("/", func(m map[string]interface{}) PageGetter {
 		return main{page}
 	})
