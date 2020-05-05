@@ -86,7 +86,15 @@ func (l Link) getChildren() []Widget {
 
 func (l Link) pack() dom.JsDomElement {
 	ele := pack(l, "a", l.getContext())
-	ele.Set("href", l.Href)
+	href := l.Href
+	if !strings.Contains(href, "://") {
+		if href[0] == '/' {
+			href = "#" + href
+		} else {
+			href = "#" + GetNowPath() + href
+		}
+	}
+	ele.Set("href", href)
 	return ele
 }
 
@@ -330,7 +338,6 @@ func (b Margin) Pack(ctx Context) Node {
 	b._context.Context = ctx
 	return b
 }
-
 
 type Column struct {
 	Children  []Widget

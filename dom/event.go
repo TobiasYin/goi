@@ -1,4 +1,4 @@
-package vdom
+package dom
 
 import "syscall/js"
 

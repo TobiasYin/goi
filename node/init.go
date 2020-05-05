@@ -1,6 +1,7 @@
 package node
 
 import (
+	rdom "github.com/TobiasYin/go_web_ui/dom"
 	dom "github.com/TobiasYin/go_web_ui/vdom"
 	"strings"
 )
@@ -46,13 +47,13 @@ type Params struct {
 	Class       []string
 	Value       string
 	Placeholder string
-	OnClick     dom.EventCallBack
-	OnInput     dom.EventCallBack
-	OnChange    dom.EventCallBack
-	OnFocus     dom.EventCallBack
-	OnBlur      dom.EventCallBack
-	OnKeyDown   dom.EventCallBack
-	OnKeyUp     dom.EventCallBack
+	OnClick     rdom.EventCallBack
+	OnInput     rdom.EventCallBack
+	OnChange    rdom.EventCallBack
+	OnFocus     rdom.EventCallBack
+	OnBlur      rdom.EventCallBack
+	OnKeyDown   rdom.EventCallBack
+	OnKeyUp     rdom.EventCallBack
 }
 
 func (e Params) getParam() Params {
@@ -69,25 +70,25 @@ func (e Params) packWithName(name string) dom.JsDomElement {
 		ele.Set("className", strings.Join(e.Class, " "))
 	}
 	if e.OnClick != nil {
-		ele.Set("onclick", dom.WrapEventCallBack(e.OnClick))
+		ele.Set("onclick", rdom.WrapEventCallBack(e.OnClick))
 	}
 	if e.OnInput != nil {
-		ele.Set("oninput", dom.WrapEventCallBack(e.OnInput))
+		ele.Set("oninput", rdom.WrapEventCallBack(e.OnInput))
 	}
 	if e.OnChange != nil {
-		ele.Set("onchange", dom.WrapEventCallBack(e.OnChange))
+		ele.Set("onchange", rdom.WrapEventCallBack(e.OnChange))
 	}
 	if e.OnFocus != nil {
-		ele.Set("onfocus", dom.WrapEventCallBack(e.OnFocus))
+		ele.Set("onfocus", rdom.WrapEventCallBack(e.OnFocus))
 	}
 	if e.OnBlur != nil {
-		ele.Set("onblur", dom.WrapEventCallBack(e.OnBlur))
+		ele.Set("onblur", rdom.WrapEventCallBack(e.OnBlur))
 	}
 	if e.OnKeyDown != nil {
-		ele.Set("onkeydown", dom.WrapEventCallBack(e.OnKeyDown))
+		ele.Set("onkeydown", rdom.WrapEventCallBack(e.OnKeyDown))
 	}
 	if e.OnKeyUp != nil {
-		ele.Set("onkeyup", dom.WrapEventCallBack(e.OnKeyUp))
+		ele.Set("onkeyup", rdom.WrapEventCallBack(e.OnKeyUp))
 	}
 	return ele
 }

@@ -69,3 +69,7 @@ func (e JsDomElement) SetValue(v interface{}) {
 func (e JsDomElement) AppendChild(n JsDomElement) {
 	e.call(n.Value)
 }
+
+func (e JsDomElement) AddEventListener(name string, event EventCallBack) {
+	e.call(name, WrapEventCallBack(event))
+}

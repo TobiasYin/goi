@@ -154,8 +154,8 @@ func Display(tree *JsDomElement)  {
 func mergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
 	length := len(newTree.Children)
 	for k, v := range newTree.Value {
-		if f, ok := v.v.(EventCallBack); ok {
-			oldTree.RealDom.Set(k, WrapEventCallBack(f))
+		if f, ok := v.v.(dom.EventCallBack); ok {
+			oldTree.RealDom.Set(k, dom.WrapEventCallBack(f))
 		}
 	}
 	for i, c := range newTree.Children {

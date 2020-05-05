@@ -1,10 +1,9 @@
 package page
 
 import (
-	"fmt"
+	"github.com/TobiasYin/go_web_ui/dom"
 	"github.com/TobiasYin/go_web_ui/example/component"
 	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/vdom"
 )
 
 type imagePage struct {
@@ -14,13 +13,17 @@ type imagePage struct {
 func (i imagePage)GetPage() *node.Page {
 	return node.NewPage(func(this *node.Context) node.Widget {
 		return node.Column{
-			Alignment: node.Right,
+			Alignment: node.Center,
 			Children: []node.Widget{
 				node.Text{
 					Content: "Page Title: " + i.title,
 				},
 				node.Text{
 					Content: "New Page",
+				},
+				node.Link{
+					Child: node.Text{Content: "new"},
+					Href: "new",
 				},
 				node.Link{
 					Child: node.Text{Content: "baidu"},
@@ -50,7 +53,7 @@ func (i imagePage)GetPage() *node.Page {
 						Content: "back",
 					},
 					Params: node.Params{
-						OnClick: func(e vdom.Event) {
+						OnClick: func(e dom.Event) {
 							node.BackToLastPage()
 						},
 					},
@@ -62,8 +65,6 @@ func (i imagePage)GetPage() *node.Page {
 
 func IntoImage(m map[string]interface{}) node.PageGetter {
 	n, ok := m["title"]
-	x, _ := m["t2"]
-	fmt.Println("t2", x)
 	title := ""
 	if ok {
 		title, _ = n.(string)

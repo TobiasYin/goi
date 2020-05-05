@@ -6,8 +6,7 @@ import (
 )
 
 func main() {
-	c := make(chan struct{})
 	node.RegisterRoute("/image", pages.IntoImage)
+	node.RegisterRoute("/image/new", pages.NewRelative)
 	node.NewApp(pages.GetMainPage())
-	<-c
 }

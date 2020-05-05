@@ -108,6 +108,7 @@ func (c *Context) doPageSetState() {
 }
 
 type Page struct {
+	path string
 	Context
 	oldDom *dom.JsDomElement
 }

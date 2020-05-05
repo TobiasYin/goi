@@ -2,9 +2,9 @@ package component
 
 import (
 	"fmt"
+	"github.com/TobiasYin/go_web_ui/dom"
 	"github.com/TobiasYin/go_web_ui/node"
 	"github.com/TobiasYin/go_web_ui/node/color"
-	"github.com/TobiasYin/go_web_ui/vdom"
 	"strconv"
 )
 
@@ -70,7 +70,7 @@ func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 						Content: "add",
 					},
 					Params: node.Params{
-						OnClick: func(e vdom.Event) {
+						OnClick: func(e dom.Event) {
 							this.SetState(func() {
 								size += 1
 								fmt.Printf("Push Button, size:%v\n", size)

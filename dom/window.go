@@ -17,3 +17,14 @@ func (w Window) ParseFloat(v js.Value) float64 {
 	return res
 }
 
+func (w Window) GetHash() string {
+	return w.Get("location").Get("hash").String()
+}
+
+func (w Window) AddEventListener(name string, event EventCallBack) {
+	w.call(name, WrapEventCallBack(event))
+}
+
+func (w Window) SetHash(hash string) {
+	w.Get("location").Set("hash", hash)
+}

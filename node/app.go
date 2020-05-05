@@ -16,9 +16,24 @@ var (
 	needRerender  = true
 )
 
+type main struct {
+	page *Page
+}
+
+func (m main) GetPage() *Page {
+	return m.page
+}
 func NewApp(page *Page) {
+	RegisterRoute("/", func(m map[string]interface{}) PageGetter {
+		return main{page}
+	})
+	page.path = "/"
 	stack.Add(page)
 	FlashApp()
+	initPush()
+	//在这里等待，防止wasm退出。
+	c := make(chan struct{})
+	<-c
 }
 
 func renderLoop() {
@@ -52,4 +67,3 @@ func rerender() {
 	end := time.Now()
 	fmt.Printf("Re Render Page, Using: %v\n", end.Sub(start))
 }
-
