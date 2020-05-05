@@ -2,15 +2,15 @@ package page
 
 import (
 	"github.com/TobiasYin/go_web_ui/dom"
-	"github.com/TobiasYin/go_web_ui/example/component"
 	"github.com/TobiasYin/go_web_ui/node"
+	"github.com/TobiasYin/go_web_ui/tool/template/component"
 )
 
 type imagePage struct {
 	title string
 }
 
-func (i imagePage)GetPage() *node.Page {
+func (i imagePage) GetPage() *node.Page {
 	return node.NewPage("Image", func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
@@ -22,15 +22,11 @@ func (i imagePage)GetPage() *node.Page {
 					Content: "New Page",
 				},
 				node.Link{
-					Child: node.Text{Content: "new"},
-					Href: "new",
-				},
-				node.Link{
 					Child: node.Text{Content: "baidu"},
 					Href:  "http://www.baidu.com",
 				},
 				component.StatefulDemo{
-					Key: node.GenerateKeyWithCallLine(),
+					Key:   node.GenerateKeyWithCallLine(),
 					Value: "In Page",
 				},
 				node.BR{},

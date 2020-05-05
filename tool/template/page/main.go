@@ -12,12 +12,13 @@ func GetMainPage() *node.Page {
 			Children: []node.Widget{
 				node.Link{
 					Child: node.Text{Content: "Image page"},
-					Href: "/image",
+					Href: "/image?title=hello!",
 				},
 				node.Text{Content: "Hello"},
 				component.StatefulDemo{
 					Key: node.GenerateKeyWithCallLine(),
 					Value: " Hello ",
+					Size: 22,
 				},
 				component.StatelessDemo{
 					Value: "World",

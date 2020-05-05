@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"runtime"
 	"strings"
 	"time"
@@ -19,24 +20,30 @@ var _new = flag.Bool("new", false, "New Project Mode")
 var port = flag.Int("port", 8080, "Run server port. only in run mode.")
 var project = flag.String("project Name", "", "input your project name, only in _new mode.")
 var goPath string
-var allowPostfix = map[string]bool{"go": true, "py": true, "sh": true, "html": true, "js": true}
+var allowPostfix = map[string]bool{"go": true, "py": true, "sh": true, "html": true, "js": true, "ps1": true}
+var scriptPostFix = "sh"
 
+func init() {
+	if runtime.GOOS == "windows" {
+		scriptPostFix = "ps1"
+	}
+}
 func getProjectPath() string {
 	path := goPath + "/src/" + *repo
 	path = strings.Replace(path, "\\", "/", -1)
 	return path
 }
 
-func build(projectPath string)  {
+func build(projectPath string, file string) {
 	if runtime.GOOS == "windows" {
-		cmd := exec.Command("powershell.exe", "-c", fmt.Sprintf("cd %s; %s/build.sh", projectPath, projectPath))
+		cmd := exec.Command("powershell.exe", "-c", fmt.Sprintf("cd %s; %s/%s.%s", projectPath, projectPath, file, scriptPostFix))
 		cmd.Stderr = os.Stdout
 		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
-		cmd := exec.Command("/bin/bash", "-c",  fmt.Sprintf("cd %s && %s/build.sh", projectPath, projectPath))
+		cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf("cd %s && %s/%s.%s", projectPath, projectPath, file, scriptPostFix))
 		cmd.Stderr = os.Stdout
 		err := cmd.Run()
 		if err != nil {
@@ -50,13 +57,18 @@ func runMode() {
 	if !server.Exists(projectPath) {
 		log.Fatalln("project not exist")
 	}
-	build(projectPath)
-	fmt.Println(*port)
+	build(projectPath, "build")
+	c := make(chan os.Signal)
 	go server.Serve(*port, projectPath+"/output/")
 	go func() {
-		time.Sleep(time.Second * 5)
-		build(projectPath)
+		for {
+			time.Sleep(time.Second * 10)
+			build(projectPath, "update")
+			//fmt.Println("rebuild...")
+		}
 	}()
+	signal.Notify(c, os.Interrupt)
+	<-c
 }
 
 func newMode() {
@@ -73,7 +85,7 @@ func newMode() {
 	inline.Root.Name = name
 	create(base, inline.Root)
 	if runtime.GOOS != "windows" {
-		cmd := exec.Command("/bin/bash", "-c", "chmod +x "+projectPath+"/build.sh")
+		cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf("chmod +x %s/build.sh %s/update.sh", projectPath, projectPath))
 		err := cmd.Run()
 		if err != nil {
 			log.Printf("error in give run perm on build.sh , user chmod to add perm. %e", err)
@@ -96,7 +108,12 @@ func create(base string, f inline.File) {
 			i = -1
 		}
 		postfix := f.Name[i+1:]
-
+		if postfix == "sh" && runtime.GOOS == "windows" {
+			return
+		}
+		if postfix == "ps1" && runtime.GOOS != "windows" {
+			return
+		}
 		file, err := os.Create(name)
 		if err != nil {
 			log.Fatalf("error in create : %s\n", name)

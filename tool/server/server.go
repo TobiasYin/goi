@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 )
 
@@ -29,7 +31,20 @@ func IsDir(path string) bool {
 }
 
 func Serve(port int, dir string) {
-	log.Printf("listening on %d...", port)
+	log.Printf("listening on :%d...\n", port)
+	url := fmt.Sprintf("http://127.0.0.1:%d", port)
+	log.Printf("visit at %s...\n", url)
+	go func() {
+		var cmd *exec.Cmd
+		if runtime.GOOS == "windows" {
+			cmd = exec.Command("powershell.exe", "start", url)
+		} else if runtime.GOOS == "darwin" {
+			cmd = exec.Command("open", url)
+		} else {
+			cmd = exec.Command("xdg-open", url)
+		}
+		_ = cmd.Run()
+	}()
 	server := http.FileServer(http.Dir(dir))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 		if strings.HasSuffix(req.URL.Path, ".wasm") {

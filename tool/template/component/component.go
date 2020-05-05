@@ -50,6 +50,9 @@ func (sc StatefulDemo) GetKey() string {
 
 func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 	size := sc.Size
+	if size == 0{
+		size = 15
+	}
 	return func(this *node.Context) node.Widget {
 		return node.Block{
 			Children: []node.Widget{
