@@ -32,10 +32,7 @@ func renderLoop() {
 			go func() {
 				needRerender = false
 				rerender()
-				select {
-				case allowRerender <- 1:
-				default:
-				}
+				allowRerender <- 1
 			}()
 		default:
 		}
