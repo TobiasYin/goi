@@ -31,7 +31,7 @@ func runMode() {
 		log.Fatalln("project not exist")
 	}
 	if runtime.GOOS == "windows" {
-		cmd := exec.Command("cd " + projectPath +" && " + projectPath+"/build.sh")
+		cmd := exec.Command("powershell.exe", "-c", "cd " + projectPath +" ; " + projectPath+"/build.sh")
 		cmd.Stderr = os.Stdout
 		err := cmd.Run()
 		if err != nil {
