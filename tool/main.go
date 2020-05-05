@@ -20,7 +20,9 @@ var project = flag.String("project Name", "", "input your project name, only in 
 var goPath string
 
 func getProjectPath() string {
-	return goPath + "/src/" + *repo
+	path := goPath + "/src/" + *repo
+	path = strings.Replace(path, "\\", "/", -1)
+	return path
 }
 
 func runMode() {
