@@ -57,6 +57,8 @@ func runMode() {
 	if !server.Exists(projectPath) {
 		log.Fatalln("project not exist")
 	}
+	log.Printf("Run Project in GOPATH: %s\n", goPath)
+	log.Printf("Project PATH: %s\n", projectPath)
 	build(projectPath, "build")
 	c := make(chan os.Signal)
 	go server.Serve(*port, projectPath+"/output/")
@@ -74,6 +76,8 @@ func runMode() {
 func newMode() {
 	projectPath := getProjectPath()
 	if server.Exists(projectPath) {
+		log.Printf("Project Create Exist in GOPATH: %s\n", goPath)
+		log.Printf("Project PATH: %s\n", projectPath)
 		log.Fatalln("project already exist")
 	}
 	i := strings.LastIndex(projectPath, "/")
@@ -84,6 +88,8 @@ func newMode() {
 	name := projectPath[i+1:]
 	inline.Root.Name = name
 	create(base, inline.Root)
+	log.Printf("Project Create Success in GOPATH: %s\n", goPath)
+	log.Printf("Project PATH: %s\n", projectPath)
 	if runtime.GOOS != "windows" {
 		cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf("chmod +x %s/build.sh %s/update.sh", projectPath, projectPath))
 		err := cmd.Run()
