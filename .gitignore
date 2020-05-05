@@ -113,9 +113,12 @@ tool/inline/init.go
 
 go_web_ui_tool
 go_web_ui_tool.exe
+go_web_ui_tool.out
 
 */go_web_ui_tool
 */go_web_ui_tool.exe
+*/go_web_ui_tool.out
 
 tool/go_web_ui_tool
 tool/go_web_ui_tool.exe
+tool/go_web_ui_tool.out
