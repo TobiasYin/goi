@@ -106,3 +106,13 @@ fabric.properties
 .idea
 
 .DS_Store
+
+tool/inline/init.go
+
+*output*
+
+go_web_ui_tool
+go_web_ui_tool.exe
+
+*/go_web_ui_tool
+*/go_web_ui_tool.exe

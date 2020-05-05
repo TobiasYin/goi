@@ -1,0 +1,13 @@
+.go-ui-inline-div {
+    display: inline-block;
+}
+
+.go-ui-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.go-ui-row {
+    display: inline-flex;
+    flex-direction: row;
+}

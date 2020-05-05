@@ -28,3 +28,19 @@ func (w Window) AddEventListener(name string, event EventCallBack) {
 func (w Window) SetHash(hash string) {
 	w.Get("location").Set("hash", hash)
 }
+
+func (w Window)InnerWidth() int {
+	return w.Get("innerWidth").Int()
+}
+
+func (w Window)InnerHeight() int {
+	return w.Get("innerHeight").Int()
+}
+
+func (w Window)OuterWidth() int {
+	return w.Get("outerWidth").Int()
+}
+
+func (w Window)OuterHeight() int {
+	return w.Get("outerHeight").Int()
+}
