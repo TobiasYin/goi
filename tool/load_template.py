@@ -10,14 +10,15 @@ def load():
 
 
 def pack_file(base, name):
-    temp = """File{{Content: "{}",Name: "{}",IsFile: true,}},"""
-    with open(os.path.join(base, name)) as f:
+    temp = """File{{Content: []byte{{{}}},Name: "{}",IsFile: true,}},"""
+    with open(os.path.join(base, name), "rb") as f:
         content = f.read()
-    content = content.replace("\\n", "\\\\n")
-    content = content.replace("\n", "\\n")
-    content = content.replace("\"", "\\\"")
-    content = content.replace("\\0", "\\\\0")
-    res = temp.format(content, name)
+    res = [str(i) for i in content]
+    # content = content.replace("\\n", "\\\\n")
+    # content = content.replace("\n", "\\n")
+    # content = content.replace("\"", "\\\"")
+    # content = content.replace("\\0", "\\\\0")
+    res = temp.format(",".join(res), name)
     return res
 
 

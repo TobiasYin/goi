@@ -35,7 +35,7 @@ func (i imagePage)GetPage() *node.Page {
 				},
 				node.BR{},
 				node.Image{
-					Src: "/example.png",
+					Src: "assert/image/example.png",
 					Params: node.Params{
 						Style: node.Style{
 							Height: node.Size{

@@ -116,3 +116,6 @@ go_web_ui_tool.exe
 
 */go_web_ui_tool
 */go_web_ui_tool.exe
+
+tool/go_web_ui_tool
+tool/go_web_ui_tool.exe

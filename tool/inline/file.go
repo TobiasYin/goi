@@ -4,7 +4,7 @@ type File struct {
 	IsDir bool
 	IsFile bool
 	Name string
-	Content string
+	Content []byte
 	Children []File
 }
 
