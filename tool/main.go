@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 )
 
@@ -15,7 +16,7 @@ var repo = flag.String("repo", "", "Input You Repo URL, eg: github.com/TobiasYin
 var run = flag.Bool("run", true, "Run A Project, if use this flag we will run a server in :port")
 var _new = flag.Bool("new", false, "New Project Mode")
 var port = flag.Int("port", 8080, "Run server port. only in run mode.")
-var project = flag.String("project Name", "male", "input your project name, only in _new mode.")
+var project = flag.String("project Name", "", "input your project name, only in _new mode.")
 var goPath string
 
 func getProjectPath() string {
@@ -27,12 +28,20 @@ func runMode() {
 	if !server.Exists(projectPath) {
 		log.Fatalln("project not exist")
 	}
-	fmt.Println("cd " + projectPath +" && " + projectPath+"/build.sh")
-	cmd := exec.Command("/bin/bash", "-c", "cd " + projectPath +" && " + projectPath+"/build.sh")
-	cmd.Stderr = os.Stdout
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalln(err)
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cd " + projectPath +" && " + projectPath+"/build.sh")
+		cmd.Stderr = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}else {
+		cmd := exec.Command("/bin/bash", "-c", "cd " + projectPath +" && " + projectPath+"/build.sh")
+		cmd.Stderr = os.Stdout
+		err := cmd.Run()
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	fmt.Println(*port)
 	server.Serve(*port, projectPath+"/output/")
@@ -51,10 +60,12 @@ func newMode() {
 	name := projectPath[i+1:]
 	inline.Root.Name = name
 	create(base, inline.Root)
-	cmd := exec.Command("/bin/bash", "-c", "chmod +x "+projectPath+"/build.sh")
-	err := cmd.Run()
-	if err != nil {
-		log.Printf("error in give run perm on build.sh , user chmod to add perm. %e", err)
+	if runtime.GOOS != "windows"{
+		cmd := exec.Command("/bin/bash", "-c", "chmod +x "+projectPath+"/build.sh")
+		err := cmd.Run()
+		if err != nil {
+			log.Printf("error in give run perm on build.sh , user chmod to add perm. %e", err)
+		}
 	}
 }
 func create(base string, f inline.File) {
@@ -95,6 +106,14 @@ func main() {
 		log.Fatalln("repo name require.")
 	}
 	if *_new {
+		if *project == "" {
+			projectPath := getProjectPath()
+			i := strings.LastIndex(projectPath, "/")
+			if i < 0 {
+				log.Fatalln("project path error")
+			}
+			*project = projectPath[i+1:]
+		}
 		newMode()
 	} else if !*run {
 		log.Fatalln("run or _new mode require.")
