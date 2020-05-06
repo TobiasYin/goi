@@ -2,7 +2,6 @@ package page
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/dom"
 	"github.com/TobiasYin/go_web_ui/example/component"
 	"github.com/TobiasYin/go_web_ui/node"
 	"github.com/TobiasYin/go_web_ui/node/color"
@@ -67,7 +66,7 @@ func GetMainPage() *node.Page {
 						Content: "Click to add 1",
 					},
 					Params: node.Params{
-						OnClick: func(e dom.Event) {
+						OnClick: func(e node.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size++
@@ -80,7 +79,7 @@ func GetMainPage() *node.Page {
 						Content: "Reset",
 					},
 					Params: node.Params{
-						OnClick: func(e dom.Event) {
+						OnClick: func(e node.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size = 22
@@ -100,7 +99,7 @@ func GetMainPage() *node.Page {
 							Content: "To new Page with out keep",
 						},
 						Params: node.Params{
-							OnClick: func(e dom.Event) {
+							OnClick: func(e node.Event) {
 								_ = node.PushByPathWithPathParams("/image?title=pushbypage1&t2=1")
 							},
 						},
@@ -115,7 +114,7 @@ func GetMainPage() *node.Page {
 							Content: "To new Page",
 						},
 						Params: node.Params{
-							OnClick: func(e dom.Event) {
+							OnClick: func(e node.Event) {
 								_ = node.PushByPathKeepState("/image?title=pushbypage1&t2=1")
 							},
 						},

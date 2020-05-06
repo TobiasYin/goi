@@ -1,6 +1,8 @@
 package node
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	rdom "github.com/TobiasYin/go_web_ui/dom"
 	dom "github.com/TobiasYin/go_web_ui/vdom"
@@ -17,38 +19,98 @@ var (
 	stack         pageStack
 	keepStatePage map[string]*Page
 	pushByCode    map[string]bool
+	encoding      *base64.Encoding
 )
 
-func pushWithHash(path string)  {
-	splitPath := strings.Split(path, "?")
-	arg := make(map[string]interface{})
+const (
+	param       = "param"
+	encodingStr = "uVPKwOaXhW5nkCF3bLem7s1cfZy9ldJRqQvYHot6z+Sp-GD4riBjxI2MUN8EATg0"
+	encodingPad = '_'
+)
+
+
+func init() {
+	router = make(map[string]NewPathPage)
+	keepStatePage = make(map[string]*Page)
+	pushByCode = make(map[string]bool)
+	rdom.Win.AddEventListener("hashchange", WrapEventCallBack(listenHash))
+	encoding = base64.NewEncoding(encodingStr).WithPadding(encodingPad)
+}
+
+func encodeParams(v map[string]interface{}) string {
+	res, err := json.Marshal(v)
+	if err != nil {
+		res = []byte("{}")
+	}
+	return encoding.EncodeToString(res)
+}
+
+func decodeParams(p string) map[string]interface{} {
+	str, err := encoding.DecodeString(p)
+	if err != nil {
+		str = []byte("{}")
+	}
+	res := make(map[string]interface{})
+	err = json.Unmarshal(str, &res)
+	if err != nil {
+		return make(map[string]interface{})
+	}
+	return res
+}
+
+func mergeArg(arg *map[string]interface{}, path *string) {
+	splitPath := strings.Split(*path, "?")
 	if len(splitPath) > 1 {
 		args := strings.Split(splitPath[1], "&")
-		path = splitPath[0]
+		*path = splitPath[0]
 		for _, v := range args {
 			if v == "" {
 				continue
 			}
-			value := ""
 			a := strings.Split(v, "=")
 			key := a[0]
-			if len(a) > 1 {
-				value = a[1]
+			if key == param {
+				newArg := decodeParams(a[1])
+				for k, v2 := range newArg {
+					if _, ok := (*arg)[k]; !ok {
+						(*arg)[k] = v2
+					}
+				}
+			} else {
+				if key == "" {
+					continue
+				}
+				value := ""
+				if len(a) > 1 {
+					value = a[1]
+				}
+				if _, ok := (*arg)[key]; !ok {
+					(*arg)[key] = value
+				}
 			}
-			arg[key] = value
+
 		}
 	}
+}
+
+func getUrlByPathAndArg(path string, arg map[string]interface{}) string {
+	return fmt.Sprintf("%s?%s=%s", path, param, encodeParams(arg))
+}
+
+func pushWithHash(path string) {
+	arg := make(map[string]interface{})
+	mergeArg(&arg, &path)
 	page, ok := router[path]
 	if !ok {
 		rdom.Win.SetHash("/")
 		return
 	}
 	p := page(arg).GetPage()
-	p.path = path
+	p.path = getUrlByPathAndArg(path, arg)
 	PushToPage(p)
 }
 
-func listenHash(event rdom.Event) {
+func listenHash(event Event) {
 	path := ""
 	hash := rdom.Win.GetHash()
 	if hash == "" {
@@ -63,7 +125,7 @@ func listenHash(event rdom.Event) {
 	pushWithHash(path)
 }
 
-func initPush()  {
+func initPush() {
 	path := ""
 	hash := rdom.Win.GetHash()
 	if hash == "" {
@@ -77,12 +139,6 @@ func initPush()  {
 	pushWithHash(path)
 }
 
-func init() {
-	router = make(map[string]NewPathPage)
-	keepStatePage = make(map[string]*Page)
-	pushByCode = make(map[string]bool)
-	rdom.Win.AddEventListener("hashchange", listenHash)
-}
 
 func RegisterRoute(path string, page NewPathPage) {
 	if len(path) == 0 {
@@ -127,6 +183,10 @@ func PushToPage(page *Page) {
 }
 
 func BackToLastPage() {
+	if stack.size == 0 {
+		_ = PushByPath("/", map[string]interface{}{})
+		return
+	}
 	stack.Pop()
 	top := stack.Top()
 	if top.Title != "" {
@@ -168,36 +228,12 @@ func PushByPathKeepState(path string) error {
 }
 
 func PushByPath(path string, arg map[string]interface{}) error {
-	splitPath := strings.Split(path, "?")
-	if len(splitPath) > 1 {
-		args := strings.Split(splitPath[1], "&")
-		path = splitPath[0]
-		for _, v := range args {
-			if v == "" {
-				continue
-			}
-			value := ""
-			a := strings.Split(v, "=")
-			key := a[0]
-			if len(a) > 1 {
-				value = a[1]
-			}
-			arg[key] = value
-		}
-	}
+	mergeArg(&arg, &path)
 	page, ok := router[path]
 	if !ok {
 		return fmt.Errorf("unkonw page")
 	}
-	var params strings.Builder
-	for k, v := range arg {
-		params.WriteString(fmt.Sprintf("%s=%v&", k, v))
-	}
-	paramsStr := params.String()
-	if paramsStr[0] > 0 {
-		paramsStr = paramsStr[:len(paramsStr)-1]
-	}
-	hash := fmt.Sprintf("%s?%s", path, paramsStr)
+	hash := getUrlByPathAndArg(path, arg)
 	setHash(hash)
 	p := page(arg).GetPage()
 	p.path = hash
@@ -215,9 +251,9 @@ func setHash(hash string) {
 }
 
 func GetNowPath() string {
-	path:=stack.Top().path
+	path := stack.Top().path
 	path = strings.Split(path, "?")[0]
-	if path[len(path) - 1] != '/' {
+	if path[len(path)-1] != '/' {
 		path = path + "/"
 	}
 	return path

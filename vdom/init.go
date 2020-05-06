@@ -15,21 +15,36 @@ func equal(e1 JsDomElement, e2 JsDomElement) bool {
 	if e1.Content != e2.Content {
 		return false
 	}
-	if len(e1.Value) != len(e2.Value) {
-		return false
-	}
 	if len(e1.Children) != len(e2.Children) {
 		return false
 	}
+	return true
+}
+
+func MergeValue(e1 *JsDomElement, e2 *JsDomElement) {
+	rdom := e2.GetRealDom()
 	for k, v := range e1.Value {
 		if _, ok := v.v.(js.Func); ok {
 			continue
 		}
-		if e2.Value[k] != v {
-			return false
+		value, ok := e2.Value[k]
+		if ok {
+			if value != v {
+				rdom.Set(k, v.v)
+			}
+		} else {
+			rdom.Set(k, v.v)
 		}
 	}
-	return true
+	for k, v := range e2.Value {
+		if _, ok := v.v.(js.Func); ok {
+			continue
+		}
+		_, ok := e1.Value[k]
+		if !ok {
+			rdom.Set(k, nil)
+		}
+	}
 }
 
 type Value struct {
@@ -109,6 +124,9 @@ func (d Document) CreateTextNode(name string) JsDomElement {
 }
 
 func (e *JsDomElement) GetRealDom() dom.JsDomElement {
+	if e == nil {
+		return dom.Dom.CreateElement("div")
+	}
 	if e.RealDom != nil {
 		return *e.RealDom
 	}
@@ -143,7 +161,7 @@ func MergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
 	}
 }
 
-func Display(tree *JsDomElement)  {
+func Display(tree *JsDomElement) {
 	children := Root.GetChildren()
 	for _, child := range children {
 		Root.RemoveChild(child)
@@ -154,8 +172,9 @@ func Display(tree *JsDomElement)  {
 func mergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
 	length := len(newTree.Children)
 	for k, v := range newTree.Value {
-		if f, ok := v.v.(dom.EventCallBack); ok {
-			oldTree.RealDom.Set(k, dom.WrapEventCallBack(f))
+		if f, ok := v.v.(js.Func); ok {
+			oldTree.RealDom.Set(k, f)
+			//TODO 优化
 		}
 	}
 	for i, c := range newTree.Children {
@@ -169,6 +188,7 @@ func mergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
 			}
 		} else {
 			c.RealDom = oc.RealDom
+			MergeValue(c, oc)
 			mergeTwoTree(c, oc)
 		}
 	}

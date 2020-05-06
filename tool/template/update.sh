@@ -8,5 +8,6 @@ if [ ! -d  "output" ]; then
 else
   echo "Static Exist, Compile Only"
 fi
-go get -d github.com/TobiasYin/go_web_ui
+go mod tidy 2> /dev/null
+go get -d github.com/TobiasYin/go_web_ui 2> /dev/null
 GOARCH=wasm GOOS=js go build -o output/main.wasm main.go

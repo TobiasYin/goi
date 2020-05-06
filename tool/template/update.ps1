@@ -10,4 +10,6 @@ if(Test-Path "output"){
 go get -d github.com/TobiasYin/go_web_ui
 $Env:GOARCH="wasm"
 $Env:GOOS="js"
+go mod tidy
+go get -d github.com/TobiasYin/go_web_ui
 go build -o output/main.wasm main.go

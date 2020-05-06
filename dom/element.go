@@ -1,6 +1,8 @@
 package dom
 
-import "syscall/js"
+import (
+	"syscall/js"
+)
 
 type JsDomElement struct {
 	Value
@@ -70,6 +72,6 @@ func (e JsDomElement) AppendChild(n JsDomElement) {
 	e.call(n.Value)
 }
 
-func (e JsDomElement) AddEventListener(name string, event EventCallBack) {
-	e.call(name, WrapEventCallBack(event))
+func (e JsDomElement) AddEventListener(name string, event js.Func) {
+	e.call(name, event)
 }

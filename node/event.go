@@ -1,4 +1,4 @@
-package dom
+package node
 
 import "syscall/js"
 
@@ -15,6 +15,7 @@ func createEventWithJsValue(v js.Value) Event {
 
 func WrapEventCallBack(cb EventCallBack) js.Func {
 	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		defer panicCatch()
 		var e Event
 		if len(args) > 0 {
 			e = createEventWithJsValue(args[0])

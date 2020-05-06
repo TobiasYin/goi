@@ -14,50 +14,68 @@ func init() {
 var (
 	allowRerender = make(chan int, 1)
 	needRerender  = true
+	mainPage      main
 )
 
 type main struct {
 	page *Page
 }
 
-func (m main) GetPage() *Page {
-	return m.page
+func panicCatch()  {
+	if r := recover(); r != nil {
+		fmt.Printf("panic found!, catch: %v\n", r)
+	}
 }
-func NewApp(page *Page) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("panic found! try to recover! %v\n", r)
-		}
+
+func recoverReverse() {
+	if r := recover(); r != nil {
+		fmt.Printf("panic found! try to recover! %v\n", r)
+		page := mainPage.page
 		if stack.size == 0 {
-			go NewApp(page)
+			go newApp(page)
 			return
 		}
 		newStack := pageStack{}
 		for stack.size > 0 {
 			newStack.Add(stack.Pop())
 		}
-		go NewApp(newStack.Pop())
+		go newApp(newStack.Pop())
 		for newStack.size > 0 {
 			top := newStack.Pop()
 			if page.path != "" {
 				_ = PushByPathWithPathParams(top.path)
-			}else {
+			} else {
 				PushToPage(top)
 			}
 		}
-	}()
+	}
+}
+
+func (m main) GetPage() *Page {
+	return m.page
+}
+
+func newApp(page *Page) {
+	defer recoverReverse()
+	mainPage = main{page}
 	RegisterRoute("/", func(m map[string]interface{}) PageGetter {
-		return main{page}
+		return mainPage
 	})
 	page.path = "/"
 	PushToPage(page)
 	initPush()
+}
+
+func NewApp(page *Page) {
+	defer recoverReverse()
+	newApp(page)
 	//在这里等待，防止wasm退出。
 	c := make(chan struct{})
 	<-c
 }
 
 func renderLoop() {
+	defer recoverReverse()
 	for {
 		time.Sleep(time.Millisecond * 50)
 		if !needRerender {
@@ -66,6 +84,7 @@ func renderLoop() {
 		select {
 		case <-allowRerender:
 			go func() {
+				defer recoverReverse()
 				needRerender = false
 				rerender()
 				allowRerender <- 1

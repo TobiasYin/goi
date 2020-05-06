@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/signal"
 	"runtime"
 	"strings"
 	"time"
@@ -19,11 +18,13 @@ var repo = flag.String("repo", "", "Input You Repo URL, eg: github.com/TobiasYin
 var run = flag.Bool("run", true, "Run A Project, if use this flag we will run a server in :port")
 var _new = flag.Bool("new", false, "New Project Mode")
 var port = flag.Int("port", 8080, "Run server port. only in run mode.")
-var project = flag.String("project Name", "", "input your project name, only in _new mode.")
+var project = flag.String("project Name", "", "Input your project name, only in _new mode.")
+var here = flag.Bool("here", false, "If you use this flag, your project will create Hear not in GOPATH")
 var goPath string
 var goRoot string
 var allowPostfix = map[string]bool{"go": true, "py": true, "sh": true, "html": true, "js": true, "ps1": true}
 var scriptPostFix = "sh"
+var goPathVerbose = "GOPATH"
 
 func init() {
 	if runtime.GOOS == "windows" {
@@ -31,7 +32,15 @@ func init() {
 	}
 }
 func getProjectPath() string {
+	if goPath[len(goPath)-1] == '/' {
+		goPath = goPath[:len(goPath)-1]
+	} else if strings.HasSuffix(goPath, "\\") {
+		goPath = goPath[:len(goPath)-2]
+	}
 	path := goPath + "/src/" + *repo
+	if *here {
+		path = goPath + "/" + *repo
+	}
 	path = strings.Replace(path, "\\", "/", -1)
 	return path
 }
@@ -59,10 +68,9 @@ func runMode() {
 	if !server.Exists(projectPath) {
 		log.Fatalln("project not exist")
 	}
-	log.Printf("Run Project in GOPATH: %s\n", goPath)
+	log.Printf("Run Project in %s: %s\n", goPathVerbose, goPath)
 	log.Printf("Project PATH: %s\n", projectPath)
 	build(projectPath, "build")
-	c := make(chan os.Signal)
 	go server.Serve(*port, projectPath+"/output/")
 	go func() {
 		for {
@@ -71,14 +79,26 @@ func runMode() {
 			//fmt.Println("rebuild...")
 		}
 	}()
-	signal.Notify(c, os.Interrupt)
-	<-c
+	listenInput()
+	//c := make(chan os.Signal)
+	//signal.Notify(c, os.Interrupt)
+	//<-c
+}
+
+func listenInput() {
+	projectPath := getProjectPath()
+	for {
+		var s string
+		_, _ = fmt.Scanln(&s)
+		fmt.Println("Rebuild!")
+		build(projectPath, "update")
+	}
 }
 
 func newMode() {
 	projectPath := getProjectPath()
 	if server.Exists(projectPath) {
-		log.Printf("Project Create Exist in GOPATH: %s\n", goPath)
+		log.Printf("Project Exist in %s: %s\n", goPathVerbose, goPath)
 		log.Printf("Project PATH: %s\n", projectPath)
 		log.Fatalln("project already exist")
 	}
@@ -90,8 +110,17 @@ func newMode() {
 	name := projectPath[i+1:]
 	inline.Root.Name = name
 	create(base, inline.Root)
-	log.Printf("Project Create Success in GOPATH: %s\n", goPath)
+	log.Printf("Project Create Success in %s: %s\n", goPathVerbose, goPath)
 	log.Printf("Project PATH: %s\n", projectPath)
+
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("powershell.exe", "-c", fmt.Sprintf("cd %s; go mod init %s", projectPath, *repo))
+		_ = cmd.Run()
+	} else {
+		cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf("cd %s; go mod init %s", projectPath, *repo))
+		_ = cmd.Run()
+	}
+
 	if runtime.GOOS != "windows" {
 		cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf("chmod +x %s/build.sh %s/update.sh", projectPath, projectPath))
 		err := cmd.Run()
@@ -154,17 +183,33 @@ func create(base string, f inline.File) {
 
 func main() {
 	flag.Parse()
-	goPath = os.Getenv("GOPATH")
-	if goPath == "" {
-		log.Fatalln("please set you go path in env.")
+	if *repo == "" && *_new {
+		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
+	}
+	if *repo == "" {
+		if server.Exists("build."+scriptPostFix) && server.Exists("update."+scriptPostFix) {
+			*here = true
+		} else {
+			log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
+		}
+	}
+	if *here {
+		goPath = os.Getenv("PWD")
+		goPathVerbose = "Current Path"
+	} else {
+		goPath = os.Getenv("GOPATH")
+		if goPath == "" {
+			log.Fatalln("please set you go path in env.")
+		}
+		if *_new {
+			log.Println("Project Will Create in GOPATH, if you want to create here, use -here flag.")
+		}
 	}
 	goRoot = os.Getenv("GOROOT")
 	if goRoot == "" {
 		log.Println("go root not define. wasm assert may not suit for your go version, set GOROOT in your path.")
 	}
-	if *repo == "" {
-		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
-	}
+
 	if *_new {
 		if *project == "" {
 			projectPath := getProjectPath()
@@ -176,7 +221,7 @@ func main() {
 		}
 		newMode()
 	} else if !*run {
-		log.Fatalln("run or _new mode require.")
+		log.Fatalln("run or new mode require.")
 	} else {
 		runMode()
 	}

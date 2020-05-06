@@ -1,7 +1,6 @@
 package page
 
 import (
-	"github.com/TobiasYin/go_web_ui/dom"
 	"github.com/TobiasYin/go_web_ui/example/component"
 	"github.com/TobiasYin/go_web_ui/node"
 )
@@ -53,7 +52,7 @@ func (i imagePage)GetPage() *node.Page {
 						Content: "back",
 					},
 					Params: node.Params{
-						OnClick: func(e dom.Event) {
+						OnClick: func(e node.Event) {
 							node.BackToLastPage()
 						},
 					},
