@@ -38,7 +38,12 @@ func NewApp(page *Page) {
 		}
 		go NewApp(newStack.Pop())
 		for newStack.size > 0 {
-			PushToPage(newStack.Pop())
+			top := newStack.Pop()
+			if page.path != "" {
+				_ = PushByPathWithPathParams(top.path)
+			}else {
+				PushToPage(top)
+			}
 		}
 	}()
 	RegisterRoute("/", func(m map[string]interface{}) PageGetter {
