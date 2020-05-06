@@ -9,5 +9,5 @@ else
   echo "Static Exist, Compile Only"
 fi
 go mod tidy 2> /dev/null
-go get -d github.com/TobiasYin/go_web_ui 2> /dev/null
+go get github.com/TobiasYin/go_web_ui@master 2> /dev/null
 GOARCH=wasm GOOS=js go build -o output/main.wasm main.go

@@ -7,5 +7,5 @@ go get -d github.com/TobiasYin/go_web_ui
 $Env:GOARCH="wasm"
 $Env:GOOS="js"
 go mod tidy
-go get -d github.com/TobiasYin/go_web_ui
+go get github.com/TobiasYin/go_web_ui@master
 go build -o output/main.wasm main.go
