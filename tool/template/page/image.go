@@ -10,6 +10,7 @@ type imagePage struct {
 }
 
 func (i imagePage) GetPage() *node.Page {
+	imageWidth := 100
 	return node.NewPage("Image", func(this *node.Context) node.Widget {
 		return node.Column{
 			Alignment: node.Center,
@@ -34,10 +35,38 @@ func (i imagePage) GetPage() *node.Page {
 					Params: node.Params{
 						Style: node.Style{
 							Height: node.Size{
-								Value: 100,
+								Value: imageWidth,
 							},
 							Width: node.Size{
-								Value: 100,
+								Value: imageWidth,
+							},
+						},
+					},
+				},
+				node.Row{
+					Children: []node.Widget{
+						node.Button{
+							Child: node.Text{
+								Content: "Enlarge Image",
+							},
+							Params: node.Params{
+								OnClick: func(e node.Event) {
+									this.SetState(func() {
+										imageWidth += 5
+									})
+								},
+							},
+						},
+						node.Button{
+							Child: node.Text{
+								Content: "Smaller Image",
+							},
+							Params: node.Params{
+								OnClick: func(e node.Event) {
+									this.SetState(func() {
+										imageWidth -= 5
+									})
+								},
 							},
 						},
 					},
