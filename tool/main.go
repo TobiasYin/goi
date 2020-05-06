@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/TobiasYin/go_web_ui/tool/inline"
 	"github.com/TobiasYin/go_web_ui/tool/server"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -20,6 +21,7 @@ var _new = flag.Bool("new", false, "New Project Mode")
 var port = flag.Int("port", 8080, "Run server port. only in run mode.")
 var project = flag.String("project Name", "", "input your project name, only in _new mode.")
 var goPath string
+var goRoot string
 var allowPostfix = map[string]bool{"go": true, "py": true, "sh": true, "html": true, "js": true, "ps1": true}
 var scriptPostFix = "sh"
 
@@ -125,6 +127,14 @@ func create(base string, f inline.File) {
 			log.Fatalf("error in create : %s\n", name)
 		}
 		o := f.Content
+		if f.Name == "wasm_exec.js" && goRoot != "" {
+			b, err := ioutil.ReadFile(fmt.Sprintf("%s/misc/wasm/wasm_exec.js", goRoot))
+			if err == nil {
+				if len(b) > 0 {
+					o = b
+				}
+			}
+		}
 		if allowPostfix[postfix] {
 			c := string(o)
 			c = strings.Replace(c, "github.com/TobiasYin/go_web_ui/tool/template", *repo, -1)
@@ -147,6 +157,10 @@ func main() {
 	goPath = os.Getenv("GOPATH")
 	if goPath == "" {
 		log.Fatalln("please set you go path in env.")
+	}
+	goRoot = os.Getenv("GOROOT")
+	if goRoot == "" {
+		log.Println("go root not define. wasm assert may not suit for your go version, set GOROOT in your path.")
 	}
 	if *repo == "" {
 		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
