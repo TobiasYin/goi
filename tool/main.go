@@ -149,7 +149,7 @@ func main() {
 		log.Fatalln("please set you go path in env.")
 	}
 	if *repo == "" {
-		log.Fatalln("repo name require.")
+		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
 	}
 	if *_new {
 		if *project == "" {
