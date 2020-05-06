@@ -112,6 +112,17 @@ func newMode() {
 	create(base, inline.Root)
 	log.Printf("Project Create Success in %s: %s\n", goPathVerbose, goPath)
 	log.Printf("Project PATH: %s\n", projectPath)
+	programName := "go_web_ui_tool"
+	if len(os.Args) > 0 {
+		programName = os.Args[0]
+	}
+	var verbose strings.Builder
+	verbose.WriteString(fmt.Sprintf("Use Command: \"%s -run ", programName))
+	if *here {
+		verbose.WriteString("-here ")
+	}
+	verbose.WriteString(fmt.Sprintf("-repo %s\" to Run The Project(no \")", *repo))
+	log.Println(verbose.String())
 
 	if runtime.GOOS == "windows" {
 		cmd := exec.Command("powershell.exe", "-c", fmt.Sprintf("cd %s; go mod init %s", projectPath, *repo))
