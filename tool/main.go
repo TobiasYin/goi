@@ -70,6 +70,7 @@ func runMode() {
 	}
 	log.Printf("Run Project in %s: %s\n", goPathVerbose, goPath)
 	log.Printf("Project PATH: %s\n", projectPath)
+	fmt.Println("building...")
 	build(projectPath, "build")
 	go server.Serve(*port, projectPath+"/output/")
 	go func() {
@@ -79,10 +80,9 @@ func runMode() {
 			//fmt.Println("rebuild...")
 		}
 	}()
+	fmt.Println("Project Will Update 1 time per 10 second. press <Enter> will update now.")
+	fmt.Println("When Update New Code, you should refresh in your browser to see the change.")
 	listenInput()
-	//c := make(chan os.Signal)
-	//signal.Notify(c, os.Interrupt)
-	//<-c
 }
 
 func listenInput() {
