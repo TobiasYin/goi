@@ -2,6 +2,7 @@ package node
 
 import (
 	"fmt"
+	"github.com/TobiasYin/go_web_ui/logs"
 	"github.com/TobiasYin/go_web_ui/vdom"
 	"time"
 )
@@ -21,7 +22,7 @@ type main struct {
 	page *Page
 }
 
-func panicCatch()  {
+func panicCatch() {
 	if r := recover(); r != nil {
 		fmt.Printf("panic found!, catch: %v\n", r)
 	}
@@ -77,17 +78,20 @@ func NewApp(page *Page) {
 func renderLoop() {
 	defer recoverReverse()
 	for {
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Millisecond * 10)
 		if !needRerender {
 			continue
 		}
 		select {
 		case <-allowRerender:
 			go func() {
+				//start := time.Now()
 				defer recoverReverse()
 				needRerender = false
 				rerender()
 				allowRerender <- 1
+				//end := time.Now()
+				//logs.Println("render page, using: ", end.Sub(start))
 			}()
 		default:
 		}
@@ -105,5 +109,5 @@ func rerender() {
 	vdom.MergeTwoTree(&d, top.oldDom)
 	top.oldDom = &d
 	end := time.Now()
-	fmt.Printf("Re Render Page, Using: %v\n", end.Sub(start))
+	logs.Printf("Re Render Page, Using: %v\n", end.Sub(start))
 }
