@@ -14,7 +14,6 @@ type ComponentFunc func() ComponentConstructor
 type StateArea interface {
 	SetState(f func())
 	setNode(node Widget)
-	setStateToFather()
 	doSetState()
 	getContext() Context
 }
@@ -48,8 +47,7 @@ type Context struct {
 }
 
 func NewContext(area StateArea) *Context {
-	newCtx := context.WithValue(area.getContext().Context, "father", area)
-	newCtx = context.WithValue(newCtx, "fatherState", make(map[string]*Context))
+	newCtx := context.WithValue(area.getContext().Context, "fatherState", make(map[string]*Context))
 	return &Context{
 		Context: newCtx,
 	}
@@ -68,7 +66,10 @@ func (c *Context) doSetState() {
 }
 
 func (c *Context) Pack(ctx Context) Node {
-	return c.GetNode(c).Pack(*c)
+	if c.node == nil {
+		c.node = Block{Children: []Widget{c.GetNode(c)}}
+	}
+	return c.node.Pack(*c)
 }
 
 func (c *Context) StatefulChild(sc StatefulWidget) Node {
@@ -87,16 +88,9 @@ func (c *Context) getContext() Context {
 	return *c
 }
 
-func (c *Context) setStateToFather() {
-	father, ok := c.Context.Value("father").(StateArea)
-	if ok {
-		father.doSetState()
-	}
-}
-
 func (c *Context) pack() dom.JsDomElement {
 	if c.node == nil {
-		c.node = c.GetNode(c)
+		c.node = Block{Children: []Widget{c.GetNode(c)}}
 	}
 	tree := c.node.Pack(*c).pack()
 	c.tree = &tree
