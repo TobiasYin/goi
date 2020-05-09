@@ -70,7 +70,7 @@ func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 					},
 					Params: node.Params{
 						OnClick: func(e node.Event) {
-							this.SetWidget(func() {
+							this.SetState(func() {
 								size += 1
 								fmt.Printf("Push Button, size:%v\n", size)
 							})

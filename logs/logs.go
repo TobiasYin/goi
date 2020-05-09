@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/TobiasYin/go_web_ui/dom"
 	"strings"
+	"time"
 )
 
 const (
@@ -23,8 +24,8 @@ func init() {
 
 }
 
-func SetLogLevel(level int)  {
-	if level < 0{
+func SetLogLevel(level int) {
+	if level < 0 {
 		level = 0
 	}
 	if level > None {
@@ -33,8 +34,8 @@ func SetLogLevel(level int)  {
 	logLevel = level
 }
 
-func SetPrintLevel(level int)  {
-	if level < 0{
+func SetPrintLevel(level int) {
+	if level < 0 {
 		level = 0
 	}
 	if level > None {
@@ -106,4 +107,26 @@ func println_(level int, str string) {
 	go func() {
 		dom.Win.Get("console").Call("log", str)
 	}()
+}
+
+type Clock struct {
+	startTime time.Time
+	endTime   time.Time
+	Level     int
+	Hint      string
+}
+
+func (c *Clock) Start() {
+	if c.Level < logLevel {
+		return
+	}
+	c.startTime = time.Now()
+}
+
+func (c *Clock) End() {
+	if c.Level < logLevel {
+		return
+	}
+	c.endTime = time.Now()
+	printfWithLevel(c.Level, "%s, Using: %v\n", c.Hint, c.endTime.Sub(c.startTime))
 }

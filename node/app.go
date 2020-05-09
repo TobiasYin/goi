@@ -8,15 +8,19 @@ import (
 
 func init() {
 	allowRerender <- 1
+	updateList = make(map[*Context]struct{})
 	SetMaxFPS(30)
 	go renderLoop()
 }
 
 var (
-	allowRerender = make(chan int, 1)
-	needRerender  = true
-	mainPage      main
-	frameTime     time.Duration
+	allowRerender  = make(chan int, 1)
+	needRerender   = true
+	mainPage       main
+	frameTime      time.Duration
+	updateList     map[*Context]struct{}
+	needRenderPage = true
+	nilStruct      = struct{}{}
 )
 
 type main struct {
@@ -97,13 +101,10 @@ func renderLoop() {
 		select {
 		case <-allowRerender:
 			go func() {
-				//start := time.Now()
 				defer recoverReverse()
 				needRerender = false
 				rerender()
 				allowRerender <- 1
-				//end := time.Now()
-				//logs.Println("render page, using: ", end.Sub(start))
 			}()
 		default:
 		}
@@ -112,21 +113,44 @@ func renderLoop() {
 
 func FlashApp() {
 	needRerender = true
+	needRenderPage = true
+}
+
+func addRerenderContext(ctx *Context) {
+	updateList[ctx] = nilStruct
+	needRerender = true
 }
 
 func rerender() {
-	start := time.Now()
+	clock := logs.Clock{Hint: "Re Render Batch"}
+	clock.Start()
+	if needRenderPage {
+		rerenderPage()
+		needRenderPage = false
+	}
+	if len(updateList) > 0 {
+		// TODO 遍历Map是很慢的操作，考虑更换成List。
+		for k, _ := range updateList {
+			k.doSetState()
+		}
+		updateList = make(map[*Context]struct{})
+	}
+	clock.End()
+}
+
+func rerenderPage() {
+	clock := logs.Clock{Hint: "Re Render Page"}
+	clock.Start()
 	top := stack.Top()
 	d := top.pack()
 	vdom.MergeTwoTree(&d, top.oldTree)
 	top.oldTree = &d
-	end := time.Now()
-	logs.Infof("Re Render Page, Using: %v\n", end.Sub(start))
+	clock.End()
 }
 
 func rerenderTree(newTree *vdom.JsDomElement, oldTree *vdom.JsDomElement) {
-	start := time.Now()
+	clock := logs.Clock{Hint: "Re Render Tree"}
+	clock.Start()
 	vdom.MergeTwoContext(newTree, oldTree)
-	end := time.Now()
-	logs.Infof("Re Render Page, Using: %v\n", end.Sub(start))
+	clock.End()
 }

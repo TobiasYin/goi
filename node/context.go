@@ -12,7 +12,7 @@ type ComponentConstructor func(*Context) Widget
 type ComponentFunc func() ComponentConstructor
 
 type StateArea interface {
-	SetWidget(f func())
+	SetState(f func())
 	GetWidget(widget Widget)
 	doSetState()
 	getContext() Context
@@ -53,12 +53,12 @@ func NewContext(area StateArea) *Context {
 	}
 }
 
-func (c *Context) SetWidget(f func()) {
+func (c *Context) SetState(f func()) {
 	f()
-	c.doSetState()
+	addRerenderContext(c)
 }
 
-func (c *Context)refreshNode()  {
+func (c *Context) refreshNode() {
 	c.GetWidget(Block{Children: []Widget{c.GetNode(c)}})
 }
 
@@ -89,7 +89,7 @@ func (c *Context) getContext() Context {
 	return *c
 }
 
-func (c *Context)getWidget() Widget {
+func (c *Context) getWidget() Widget {
 	if c.widget == nil {
 		c.refreshNode()
 	}
@@ -101,11 +101,6 @@ func (c *Context) pack() dom.JsDomElement {
 	tree := c.widget.Pack(*c).pack()
 	c.tree = &tree
 	return tree
-}
-
-func (c *Context) doPageSetState() {
-	c.GetWidget(c.GetNode(c))
-	FlashApp()
 }
 
 type Page struct {
