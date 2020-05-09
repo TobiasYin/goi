@@ -11,7 +11,7 @@ type StatelessDemo struct {
 	Value string
 }
 
-func (sc StatelessDemo) GetNode(context *node.Context) node.Widget {
+func (sc StatelessDemo) GetWidget(context *node.Context) node.Widget {
 	return node.Block{
 		Children: []node.Widget{
 			node.Text{
@@ -70,7 +70,7 @@ func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
 					},
 					Params: node.Params{
 						OnClick: func(e node.Event) {
-							this.SetState(func() {
+							this.SetWidget(func() {
 								size += 1
 								fmt.Printf("Push Button, size:%v\n", size)
 							})

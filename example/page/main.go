@@ -68,7 +68,7 @@ func GetMainPage() *node.Page {
 					Params: node.Params{
 						OnClick: func(e node.Event) {
 							fmt.Println("Hello Callback")
-							this.SetState(func() {
+							this.SetWidget(func() {
 								size++
 							})
 						},
@@ -81,7 +81,7 @@ func GetMainPage() *node.Page {
 					Params: node.Params{
 						OnClick: func(e node.Event) {
 							fmt.Println("Hello Callback")
-							this.SetState(func() {
+							this.SetWidget(func() {
 								size = 22
 							})
 						},

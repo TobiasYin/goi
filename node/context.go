@@ -12,8 +12,8 @@ type ComponentConstructor func(*Context) Widget
 type ComponentFunc func() ComponentConstructor
 
 type StateArea interface {
-	SetState(f func())
-	setNode(node Widget)
+	SetWidget(f func())
+	GetWidget(widget Widget)
 	doSetState()
 	getContext() Context
 }
@@ -26,7 +26,7 @@ type StatefulWidget interface {
 
 type StatelessWidget interface {
 	Widget
-	GetNode(*Context) Widget
+	GetWidget(*Context) Widget
 }
 
 func PackStateful(sf StatefulWidget, ctx Context) Node {
@@ -34,13 +34,13 @@ func PackStateful(sf StatefulWidget, ctx Context) Node {
 }
 
 func PackStateless(sl StatelessWidget, ctx Context) Node {
-	return sl.GetNode(&ctx).Pack(ctx)
+	return sl.GetWidget(&ctx).Pack(ctx)
 }
 
 type Context struct {
 	Context context.Context
 	GetNode func(*Context) Widget
-	node    Widget
+	widget  Widget
 	isPage  bool
 	oldTree *dom.JsDomElement
 	tree    *dom.JsDomElement
@@ -53,23 +53,24 @@ func NewContext(area StateArea) *Context {
 	}
 }
 
-func (c *Context) SetState(f func()) {
+func (c *Context) SetWidget(f func()) {
 	f()
 	c.doSetState()
 }
 
+func (c *Context)refreshNode()  {
+	c.GetWidget(Block{Children: []Widget{c.GetNode(c)}})
+}
+
 func (c *Context) doSetState() {
 	c.oldTree = c.tree
-	c.setNode(c.GetNode(c))
+	c.refreshNode()
 	c.pack()
 	rerenderTree(c.tree, c.oldTree)
 }
 
 func (c *Context) Pack(ctx Context) Node {
-	if c.node == nil {
-		c.node = Block{Children: []Widget{c.GetNode(c)}}
-	}
-	return c.node.Pack(*c)
+	return c.getWidget().Pack(*c)
 }
 
 func (c *Context) StatefulChild(sc StatefulWidget) Node {
@@ -77,28 +78,33 @@ func (c *Context) StatefulChild(sc StatefulWidget) Node {
 }
 
 func (c *Context) StatelessChild(sc StatelessWidget) Node {
-	return sc.GetNode(c).Pack(*c)
+	return sc.GetWidget(c).Pack(*c)
 }
 
-func (c *Context) setNode(node Widget) {
-	c.node = node
+func (c *Context) GetWidget(widget Widget) {
+	c.widget = widget
 }
 
 func (c *Context) getContext() Context {
 	return *c
 }
 
-func (c *Context) pack() dom.JsDomElement {
-	if c.node == nil {
-		c.node = Block{Children: []Widget{c.GetNode(c)}}
+func (c *Context)getWidget() Widget {
+	if c.widget == nil {
+		c.refreshNode()
 	}
-	tree := c.node.Pack(*c).pack()
+	return c.widget
+}
+
+func (c *Context) pack() dom.JsDomElement {
+	c.getWidget()
+	tree := c.widget.Pack(*c).pack()
 	c.tree = &tree
 	return tree
 }
 
 func (c *Context) doPageSetState() {
-	c.setNode(c.GetNode(c))
+	c.GetWidget(c.GetNode(c))
 	FlashApp()
 }
 

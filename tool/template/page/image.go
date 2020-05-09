@@ -51,7 +51,7 @@ func (i imagePage) GetPage() *node.Page {
 							},
 							Params: node.Params{
 								OnClick: func(e node.Event) {
-									this.SetState(func() {
+									this.SetWidget(func() {
 										imageWidth += 5
 									})
 								},
@@ -63,7 +63,7 @@ func (i imagePage) GetPage() *node.Page {
 							},
 							Params: node.Params{
 								OnClick: func(e node.Event) {
-									this.SetState(func() {
+									this.SetWidget(func() {
 										imageWidth -= 5
 									})
 								},
