@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"fmt"
+	"github.com/TobiasYin/go_web_ui/logs"
 	dom "github.com/TobiasYin/go_web_ui/vdom"
 	"runtime"
 )
@@ -43,6 +44,8 @@ type Context struct {
 	GetNode func(*Context) Widget
 	node    Widget
 	isPage  bool
+	oldTree *dom.JsDomElement
+	tree    *dom.JsDomElement
 }
 
 func NewContext(area StateArea) *Context {
@@ -59,14 +62,11 @@ func (c *Context) SetState(f func()) {
 }
 
 func (c *Context) doSetState() {
-	if c.isPage {
-		c.doPageSetState()
-		return
-	}
+	c.oldTree = c.tree
 	c.setNode(c.GetNode(c))
-	c.setStateToFather()
+	c.pack()
+	rerenderTree(c.tree, c.oldTree)
 }
-
 
 func (c *Context) Pack(ctx Context) Node {
 	return c.GetNode(c).Pack(*c)
@@ -99,7 +99,9 @@ func (c *Context) pack() dom.JsDomElement {
 	if c.node == nil {
 		c.node = c.GetNode(c)
 	}
-	return c.node.Pack(*c).pack()
+	tree := c.node.Pack(*c).pack()
+	c.tree = &tree
+	return tree
 }
 
 func (c *Context) doPageSetState() {
@@ -111,7 +113,6 @@ type Page struct {
 	path string
 	Context
 	Title string
-	oldDom *dom.JsDomElement
 }
 
 func NewPageEmpty() *Page {
@@ -121,7 +122,7 @@ func NewPageEmpty() *Page {
 	return &page
 }
 
-func NewPage(title string,getNode ComponentConstructor) *Page {
+func NewPage(title string, getNode ComponentConstructor) *Page {
 	page := NewPageEmpty()
 	page.GetNode = getNode
 	page.Title = title

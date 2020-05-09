@@ -118,8 +118,15 @@ func rerender() {
 	start := time.Now()
 	top := stack.Top()
 	d := top.pack()
-	vdom.MergeTwoTree(&d, top.oldDom)
-	top.oldDom = &d
+	vdom.MergeTwoTree(&d, top.oldTree)
+	top.oldTree = &d
+	end := time.Now()
+	logs.Infof("Re Render Page, Using: %v\n", end.Sub(start))
+}
+
+func rerenderTree(newTree *vdom.JsDomElement, oldTree *vdom.JsDomElement) {
+	start := time.Now()
+	vdom.MergeTwoContext(newTree, oldTree)
 	end := time.Now()
 	logs.Infof("Re Render Page, Using: %v\n", end.Sub(start))
 }

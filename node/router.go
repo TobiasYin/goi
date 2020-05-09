@@ -176,8 +176,8 @@ func PushToPage(page *Page) {
 		rdom.Dom.SetTitle(page.Title)
 	}
 	stack.Add(page)
-	if page.oldDom != nil {
-		dom.Display(page.oldDom)
+	if page.oldTree != nil {
+		dom.Display(page.oldTree)
 	}
 	FlashApp()
 }
@@ -193,7 +193,7 @@ func BackToLastPage() {
 		rdom.Dom.SetTitle(top.Title)
 	}
 	setHash(top.path)
-	dom.Display(top.oldDom)
+	dom.Display(top.oldTree)
 	FlashApp()
 }
 

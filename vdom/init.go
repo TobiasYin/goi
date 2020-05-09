@@ -161,6 +161,10 @@ func MergeTwoTree(newTree *JsDomElement, oldTree *JsDomElement) {
 	}
 }
 
+func MergeTwoContext(newTree *JsDomElement, oldTree *JsDomElement) {
+	mergeTwoTree(newTree, oldTree)
+}
+
 func Display(tree *JsDomElement) {
 	children := Root.GetChildren()
 	for _, child := range children {
