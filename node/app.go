@@ -8,6 +8,7 @@ import (
 
 func init() {
 	allowRerender <- 1
+	SetMaxFPS(30)
 	go renderLoop()
 }
 
@@ -15,6 +16,7 @@ var (
 	allowRerender = make(chan int, 1)
 	needRerender  = true
 	mainPage      main
+	frameTime     time.Duration
 )
 
 type main struct {
@@ -74,10 +76,21 @@ func NewApp(page *Page) {
 	<-c
 }
 
+// 设置每秒最大帧率
+func SetMaxFPS(fps int) {
+	if fps > 144 {
+		fps = 144
+	}
+	if fps < 10 {
+		fps = 10
+	}
+	frameTime = time.Second / time.Duration(fps)
+}
+
 func renderLoop() {
 	defer recoverReverse()
 	for {
-		time.Sleep(time.Millisecond * 10)
+		time.Sleep(frameTime)
 		if !needRerender {
 			continue
 		}
