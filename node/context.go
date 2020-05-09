@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/logs"
 	dom "github.com/TobiasYin/go_web_ui/vdom"
 	"runtime"
 )
