@@ -226,7 +226,6 @@ func (b Border) packStyle() string {
 		borders[3].Type = b.BottomType
 	}
 	var style strings.Builder
-	style.WriteString("display:inline-block;")
 	prefix := []string{"left", "right", "top", "bottom"}
 	for i, v := range borders {
 		if v.Width == 0 && v.Type == "" && v.Color == color.ColorNil {
@@ -246,6 +245,9 @@ func (b Border) packStyle() string {
 			style.WriteString(v.Color.String())
 		}
 		style.WriteString(";")
+	}
+	if style.Len() != 0{
+		style.WriteString("display:inline-block;")
 	}
 	return style.String()
 }
@@ -315,7 +317,6 @@ func (m Margin) pack() dom.JsDomElement {
 	}
 
 	var style strings.Builder
-	style.WriteString("display:inline-block;")
 	prefix := []string{"left", "right", "top", "bottom"}
 	for i, v := range margin {
 		if v == 0 {
@@ -324,6 +325,7 @@ func (m Margin) pack() dom.JsDomElement {
 		style.WriteString(fmt.Sprintf("padding-%s: %dpx;", prefix[i], v))
 	}
 	if style.Len() != 0 {
+		style.WriteString("display:inline-block;")
 		ele.Set("style", style.String())
 	}
 	packChildren(m, &ele, m.getContext())
@@ -334,9 +336,9 @@ func (m Margin) getChildren() []Widget {
 	return []Widget{m.Child}
 }
 
-func (b Margin) Pack(ctx Context) Node {
-	b._context.Context = ctx
-	return b
+func (m Margin) Pack(ctx Context) Node {
+	m._context.Context = ctx
+	return m
 }
 
 type Column struct {

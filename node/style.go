@@ -204,7 +204,6 @@ func (p Padding) packStyle() string {
 	}
 
 	var style strings.Builder
-	style.WriteString("display:inline-block;")
 	prefix := []string{"left", "right", "top", "bottom"}
 	for i, v := range padding {
 		if v == 0 {
