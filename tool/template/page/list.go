@@ -2,8 +2,8 @@ package page
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/tool/template/component"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/tool/template/component"
 	"math/rand"
 	"strings"
 )
@@ -25,7 +25,7 @@ func (i listPage) GetPage() *node.Page {
 			Child: component.Item{
 				Title: fmt.Sprintf("Title %d", i),
 				Content: content.String(),
-				Image: "assert/image/example.png",
+				Image: "asset/image/example.png",
 			},
 			Width: 20,
 		})

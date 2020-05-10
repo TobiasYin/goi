@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/tool/inline"
-	"github.com/TobiasYin/go_web_ui/tool/server"
+	"github.com/TobiasYin/goi/tool/inline"
+	"github.com/TobiasYin/goi/tool/server"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var repo = flag.String("repo", "", "Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
+var repo = flag.String("repo", "", "Input You Repo URL, eg: github.com/TobiasYin/goi")
 var run = flag.Bool("run", true, "Run A Project, if use this flag we will run a server in :port")
 var _new = flag.Bool("new", false, "New Project Mode")
 var port = flag.Int("port", 8080, "Run server port. only in run mode.")
@@ -112,7 +112,7 @@ func newMode() {
 	create(base, inline.Root)
 	log.Printf("Project Create Success in %s: %s\n", goPathVerbose, goPath)
 	log.Printf("Project PATH: %s\n", projectPath)
-	programName := "go_web_ui_tool"
+	programName := "goi_tool"
 	if len(os.Args) > 0 {
 		programName = os.Args[0]
 	}
@@ -177,7 +177,7 @@ func create(base string, f inline.File) {
 		}
 		if allowPostfix[postfix] {
 			c := string(o)
-			c = strings.Replace(c, "github.com/TobiasYin/go_web_ui/tool/template", *repo, -1)
+			c = strings.Replace(c, "github.com/TobiasYin/goi/tool/template", *repo, -1)
 			c = strings.Replace(c, "{{PROJECT_NAME}}", *project, -1)
 			c = strings.Replace(c, "{{PROJECT_PATH}}", getProjectPath(), -1)
 			_, err = file.WriteString(c)
@@ -195,13 +195,13 @@ func create(base string, f inline.File) {
 func main() {
 	flag.Parse()
 	if *repo == "" && *_new {
-		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
+		log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/goi")
 	}
 	if *repo == "" {
 		if server.Exists("build."+scriptPostFix) && server.Exists("update."+scriptPostFix) {
 			*here = true
 		} else {
-			log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/go_web_ui")
+			log.Fatalln("repo name require. Input You Repo URL, eg: github.com/TobiasYin/goi")
 		}
 	}
 	if *here {
@@ -218,7 +218,7 @@ func main() {
 	}
 	goRoot = os.Getenv("GOROOT")
 	if goRoot == "" {
-		log.Println("go root not define. wasm assert may not suit for your go version, set GOROOT in your path.")
+		log.Println("go root not define. wasm asset may not suit for your go version, set GOROOT in your path.")
 	}
 
 	if *_new {

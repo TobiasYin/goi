@@ -1,8 +1,8 @@
 package page
 
 import (
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/tool/template/component"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/tool/template/component"
 )
 
 type imagePage struct {
@@ -31,7 +31,7 @@ func (i imagePage) GetPage() *node.Page {
 				},
 				node.BR{},
 				node.Image{
-					Src: "assert/image/example.png",
+					Src: "asset/image/example.png",
 					Params: node.Params{
 						Style: node.Style{
 							Height: node.Size{

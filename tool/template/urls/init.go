@@ -1,8 +1,8 @@
 package urls
 
 import (
-	"github.com/TobiasYin/go_web_ui/node"
-	pages "github.com/TobiasYin/go_web_ui/tool/template/page"
+	"github.com/TobiasYin/goi/node"
+	pages "github.com/TobiasYin/goi/tool/template/page"
 )
 
 func init() {

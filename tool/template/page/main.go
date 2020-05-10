@@ -1,8 +1,8 @@
 package page
 
 import (
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/tool/template/component"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/tool/template/component"
 )
 
 func GetMainPage() *node.Page {

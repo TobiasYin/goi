@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/TobiasYin/go_web_ui/logs"
-	"github.com/TobiasYin/go_web_ui/node"
-	pages "github.com/TobiasYin/go_web_ui/tool/template/page"
-	_ "github.com/TobiasYin/go_web_ui/tool/template/urls"
+	"github.com/TobiasYin/goi/logs"
+	"github.com/TobiasYin/goi/node"
+	pages "github.com/TobiasYin/goi/tool/template/page"
+	_ "github.com/TobiasYin/goi/tool/template/urls"
 )
 
 func main() {
