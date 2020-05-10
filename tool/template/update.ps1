@@ -7,9 +7,7 @@ if(Test-Path "output"){
 }else{
   Write-Verbose "Static Exist, Compile Only"
 }
-go get -d github.com/TobiasYin/goi
 $Env:GOARCH="wasm"
 $Env:GOOS="js"
-go mod tidy
-go get github.com/TobiasYin/goi@master
+go get github.com/TobiasYin/goi@latest
 go build -o output/main.wasm main.go

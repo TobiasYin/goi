@@ -1,4 +1,6 @@
 #!/bin/bash
+export GOARCH=wasm
+export GOOS=js
 cd {{PROJECT_PATH}}
 if [ ! -d  "output" ]; then
   echo "Create Static File"
@@ -8,6 +10,5 @@ if [ ! -d  "output" ]; then
 else
   echo "Static Exist, Compile Only"
 fi
-go mod tidy 2> /dev/null
-go get github.com/TobiasYin/goi@master 2> /dev/null
+go get github.com/TobiasYin/goi@latest 2> /dev/null
 GOARCH=wasm GOOS=js go build -o output/main.wasm main.go
