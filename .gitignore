@@ -111,14 +111,14 @@ tool/inline/init.go
 
 *output*
 
-go_web_ui_tool
-go_web_ui_tool.exe
-go_web_ui_tool.out
+goi_tool
+goi_tool.exe
+goi_tool.out
 
-*/go_web_ui_tool
-*/go_web_ui_tool.exe
-*/go_web_ui_tool.out
+*/goi_tool
+*/goi_tool.exe
+*/goi_tool.out
 
-tool/go_web_ui_tool
-tool/go_web_ui_tool.exe
-tool/go_web_ui_tool.out
+tool/goi_tool
+tool/goi_tool.exe
+tool/goi_tool.out

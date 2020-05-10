@@ -1,7 +1,7 @@
 package page
 
 import (
-	"github.com/TobiasYin/go_web_ui/node"
+	"github.com/TobiasYin/goi/node"
 )
 
 type relativePage struct {

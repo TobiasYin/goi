@@ -1,6 +1,6 @@
 package node
 
-import dom "github.com/TobiasYin/go_web_ui/vdom"
+import dom "github.com/TobiasYin/goi/vdom"
 
 type Image struct {
 	Params

@@ -1,8 +1,8 @@
 package node
 
 import (
-	"github.com/TobiasYin/go_web_ui/logs"
-	"github.com/TobiasYin/go_web_ui/vdom"
+	"github.com/TobiasYin/goi/logs"
+	"github.com/TobiasYin/goi/vdom"
 	"time"
 )
 

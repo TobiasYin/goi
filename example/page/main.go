@@ -2,9 +2,9 @@ package page
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/example/component"
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/node/color"
+	"github.com/TobiasYin/goi/example/component"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/node/color"
 )
 
 func GetMainPage() *node.Page {

@@ -1,7 +1,7 @@
 package node
 
 import (
-	dom "github.com/TobiasYin/go_web_ui/vdom"
+	dom "github.com/TobiasYin/goi/vdom"
 	"strings"
 )
 

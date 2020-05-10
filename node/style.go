@@ -2,7 +2,7 @@ package node
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/node/color"
+	"github.com/TobiasYin/goi/node/color"
 	"strings"
 )
 

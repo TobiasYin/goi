@@ -1,7 +1,7 @@
 package vdom
 
 import (
-	"github.com/TobiasYin/go_web_ui/dom"
+	"github.com/TobiasYin/goi/dom"
 	"syscall/js"
 )
 

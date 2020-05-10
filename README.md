@@ -4,15 +4,15 @@
 本项目旨在用go语言声明式的编写响应式的web app。
 项目使用类似flutter的语法，帮助开发人员快速的建构web应用。
 
-## 示例
+## 示例 (过时，请查看example)
 
 ```go
 package main
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/node/color"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/node/color"
 )
 
 func main() {

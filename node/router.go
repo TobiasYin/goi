@@ -4,8 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	rdom "github.com/TobiasYin/go_web_ui/dom"
-	dom "github.com/TobiasYin/go_web_ui/vdom"
+	rdom "github.com/TobiasYin/goi/dom"
+	dom "github.com/TobiasYin/goi/vdom"
 	"strings"
 )
 

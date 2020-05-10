@@ -2,7 +2,7 @@ package logs
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/dom"
+	"github.com/TobiasYin/goi/dom"
 	"strings"
 	"time"
 )

@@ -2,8 +2,8 @@ package component
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/node"
-	"github.com/TobiasYin/go_web_ui/node/color"
+	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi/node/color"
 	"strconv"
 )
 

@@ -2,8 +2,8 @@ package node
 
 import (
 	"fmt"
-	"github.com/TobiasYin/go_web_ui/node/color"
-	dom "github.com/TobiasYin/go_web_ui/vdom"
+	"github.com/TobiasYin/goi/node/color"
+	dom "github.com/TobiasYin/goi/vdom"
 	"strings"
 )
 

@@ -1,8 +1,8 @@
 package page
 
 import (
-	"github.com/TobiasYin/go_web_ui/example/component"
-	"github.com/TobiasYin/go_web_ui/node"
+	"github.com/TobiasYin/goi/example/component"
+	"github.com/TobiasYin/goi/node"
 )
 
 type imagePage struct {
