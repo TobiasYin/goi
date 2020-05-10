@@ -1,11 +1,11 @@
 package urls
 
 import (
-	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi"
 	pages "github.com/TobiasYin/goi/tool/template/page"
 )
 
 func init() {
-	node.RegisterRoute("/image", pages.NewImagePage)
-	node.RegisterRoute("/list", pages.NewListPage)
+	goi.RegisterRoute("/image", pages.NewImagePage)
+	goi.RegisterRoute("/list", pages.NewListPage)
 }

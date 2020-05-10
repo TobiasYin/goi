@@ -1,8 +1,8 @@
-package node
+package goi
 
 import (
 	"fmt"
-	"github.com/TobiasYin/goi/node/color"
+	"github.com/TobiasYin/goi/color"
 	"strings"
 )
 
@@ -45,7 +45,7 @@ func (s Style) packStyle() string {
 	if s.TextIndent != 0 {
 		res["text-indent"] = fmt.Sprintf("%dem", s.TextIndent)
 	}
-	if s.Color != color.ColorNil{
+	if s.Color != color.ColorNil {
 		res["color"] = s.Color.String()
 	}
 	if s.BackgroundColor != color.ColorNil {

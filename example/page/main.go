@@ -2,71 +2,71 @@ package page
 
 import (
 	"fmt"
+	"github.com/TobiasYin/goi"
+	"github.com/TobiasYin/goi/color"
 	"github.com/TobiasYin/goi/example/component"
-	"github.com/TobiasYin/goi/node"
-	"github.com/TobiasYin/goi/node/color"
 )
 
-func GetMainPage() *node.Page {
+func GetMainPage() *goi.Page {
 	size := 22
-	return node.NewPage("Main", func(this *node.Context) node.Widget {
-		return node.Column{
-			Alignment: node.Center,
-			Children: []node.Widget{
-				node.Row{
+	return goi.NewPage("Main", func(this *goi.Context) goi.Widget {
+		return goi.Column{
+			Alignment: goi.Center,
+			Children: []goi.Widget{
+				goi.Row{
 					Expand:    true,
-					Alignment: node.Center,
-					Children: []node.Widget{
-						node.Expanded{
+					Alignment: goi.Center,
+					Children: []goi.Widget{
+						goi.Expanded{
 							Flex: 1,
-							Child: node.Inline{
-								Params: node.Params{
-									Style: node.Style{
-										Height: node.Size{
-											Mode:  node.SizeModePx,
+							Child: goi.Inline{
+								Params: goi.Params{
+									Style: goi.Style{
+										Height: goi.Size{
+											Mode:  goi.SizeModePx,
 											Value: 50,
 										},
 									},
 								},
-								Children: []node.Widget{
-									node.Text{
+								Children: []goi.Widget{
+									goi.Text{
 										Content: "Hello",
 									},
 								},
 							},
 						},
-						node.Margin{
+						goi.Margin{
 							Left: 10,
 						},
-						node.Inline{
-							Children: []node.Widget{
-								node.Text{
+						goi.Inline{
+							Children: []goi.Widget{
+								goi.Text{
 									Content: "World",
 								},
 							},
 						},
 					},
 				},
-				node.Inline{
-					Children: []node.Widget{
-						node.Text{
+				goi.Inline{
+					Children: []goi.Widget{
+						goi.Text{
 							Content: "aaa",
-							TextStyle: node.TextStyle{
+							TextStyle: goi.TextStyle{
 								FontSize: size,
 								Color:    color.Red,
 							},
 						},
-						node.Text{
+						goi.Text{
 							Content: "bbb",
 						},
 					},
 				},
-				node.Button{
-					Child: node.Text{
+				goi.Button{
+					Child: goi.Text{
 						Content: "Click to add 1",
 					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size++
@@ -74,12 +74,12 @@ func GetMainPage() *node.Page {
 						},
 					},
 				},
-				node.Button{
-					Child: node.Text{
+				goi.Button{
+					Child: goi.Text{
 						Content: "Reset",
 					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
 							fmt.Println("Hello Callback")
 							this.SetState(func() {
 								size = 22
@@ -88,58 +88,58 @@ func GetMainPage() *node.Page {
 					},
 				},
 				component.StatefulDemo{
-					Key:   node.GenerateKeyWithCallLine(),
+					Key:   goi.GenerateKeyWithCallLine(),
 					Value: "Hello ! Stateful First ",
 					Size:  10,
-					Child: node.Text{Content: "I'm child"},
+					Child: goi.Text{Content: "I'm child"},
 				},
-				node.Border{
-					Child: node.Button{
-						Child: node.Text{
+				goi.Border{
+					Child: goi.Button{
+						Child: goi.Text{
 							Content: "To new Page with out keep",
 						},
-						Params: node.Params{
-							OnClick: func(e node.Event) {
-								_ = node.PushByPathWithPathParams("/image?title=pushbypage1&t2=1")
+						Params: goi.Params{
+							OnClick: func(e goi.Event) {
+								_ = goi.PushByPathWithPathParams("/image?title=pushbypage1&t2=1")
 							},
 						},
 					},
 					Width: 2,
 					Color: color.Red,
-					Type:  node.BorderTypeSolid,
+					Type:  goi.BorderTypeSolid,
 				},
-				node.Border{
-					Child: node.Button{
-						Child: node.Text{
+				goi.Border{
+					Child: goi.Button{
+						Child: goi.Text{
 							Content: "To new Page",
 						},
-						Params: node.Params{
-							OnClick: func(e node.Event) {
-								_ = node.PushByPathKeepState("/image?title=pushbypage1&t2=1")
+						Params: goi.Params{
+							OnClick: func(e goi.Event) {
+								_ = goi.PushByPathKeepState("/image?title=pushbypage1&t2=1")
 							},
 						},
 					},
 					Width: 2,
 					Color: color.Red,
-					Type:  node.BorderTypeSolid,
+					Type:  goi.BorderTypeSolid,
 				},
-				node.Margin{
+				goi.Margin{
 					Width: 10,
 					Child: component.StatefulDemo{
-						Key:   node.GenerateKeyWithCallLine(),
+						Key:   goi.GenerateKeyWithCallLine(),
 						Value: "Hello ! Stateful ",
 						Size:  23,
-						Child: node.Text{Content: "I'm child"},
+						Child: goi.Text{Content: "I'm child"},
 					},
 				},
 				component.StatelessDemo{
 					Value: "Tobias",
 				},
 				component.StatefulDemo{
-					Key:   node.GenerateKeyWithCallLine(),
+					Key:   goi.GenerateKeyWithCallLine(),
 					Value: "Hello ! Stateful AGAIN ",
 					Size:  33,
-					Child: node.Text{Content: "I'm child"},
+					Child: goi.Text{Content: "I'm child"},
 				},
 			},
 		}

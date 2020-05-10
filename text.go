@@ -1,8 +1,8 @@
-package node
+package goi
 
 import (
 	"fmt"
-	"github.com/TobiasYin/goi/node/color"
+	"github.com/TobiasYin/goi/color"
 	dom "github.com/TobiasYin/goi/vdom"
 	"strconv"
 	"strings"

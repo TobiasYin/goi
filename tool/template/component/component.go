@@ -2,9 +2,9 @@ package component
 
 import (
 	"fmt"
+	"github.com/TobiasYin/goi"
+	"github.com/TobiasYin/goi/color"
 	"github.com/TobiasYin/goi/logs"
-	"github.com/TobiasYin/goi/node"
-	"github.com/TobiasYin/goi/node/color"
 	"strconv"
 )
 
@@ -12,30 +12,30 @@ type StatelessDemo struct {
 	Value string
 }
 
-func (sc StatelessDemo) GetWidget(context *node.Context) node.Widget {
-	return node.Block{
-		Children: []node.Widget{
-			node.Text{
+func (sc StatelessDemo) GetWidget(context *goi.Context) goi.Widget {
+	return goi.Block{
+		Children: []goi.Widget{
+			goi.Text{
 				Content: sc.Value + " Stateless",
 			},
-			node.BR{},
+			goi.BR{},
 		},
 	}
 }
 
-func (sc StatelessDemo) Pack(context node.Context) node.Node {
-	return node.PackStateless(sc, context)
+func (sc StatelessDemo) Pack(context goi.Context) goi.Node {
+	return goi.PackStateless(sc, context)
 }
 
 type StatefulDemo struct {
 	Key   string
 	Value string
-	Child node.Widget
+	Child goi.Widget
 	Size  int
 }
 
-func (sc StatefulDemo) Pack(context node.Context) node.Node {
-	return node.PackStateful(sc, context)
+func (sc StatefulDemo) Pack(context goi.Context) goi.Node {
+	return goi.PackStateful(sc, context)
 }
 
 func (sc StatefulDemo) GetKey() string {
@@ -48,32 +48,32 @@ func (sc StatefulDemo) GetKey() string {
 	return strconv.Itoa(sc.Size)
 }
 
-func (sc StatefulDemo) GetConstructor() node.ComponentConstructor {
+func (sc StatefulDemo) GetConstructor() goi.ComponentConstructor {
 	size := sc.Size
 	if size == 0 {
 		size = 15
 	}
-	return func(this *node.Context) node.Widget {
-		return node.Block{
-			Children: []node.Widget{
-				node.Text{
+	return func(this *goi.Context) goi.Widget {
+		return goi.Block{
+			Children: []goi.Widget{
+				goi.Text{
 					Content: "Text ComponentFunc " + sc.Value,
-					TextStyle: node.TextStyle{
+					TextStyle: goi.TextStyle{
 						Color:      color.RoyalBlue,
 						FontSize:   size,
-						FontWeight: node.FontWeight900,
+						FontWeight: goi.FontWeight900,
 					},
 				},
-				node.BR{},
-				node.Text{
+				goi.BR{},
+				goi.Text{
 					Content: fmt.Sprintf("size: %d", size),
 				},
-				node.Button{
-					Child: node.Text{
+				goi.Button{
+					Child: goi.Text{
 						Content: "add",
 					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
 							this.SetState(func() {
 								size += 1
 								logs.Printf("Push Button, size:%v\n", size)
@@ -93,44 +93,44 @@ type Item struct {
 	Image   string
 }
 
-func (i Item) GetWidget(context *node.Context) node.Widget {
-	return node.Row{
-		Alignment: node.Center,
-		Children: []node.Widget{
-			node.Image{
+func (i Item) GetWidget(context *goi.Context) goi.Widget {
+	return goi.Row{
+		Alignment: goi.Center,
+		Children: []goi.Widget{
+			goi.Image{
 				Src: i.Image,
-				Params: node.Params{
-					Style: node.Style{
-						Height: node.Size{
-							Mode:  node.SizeModePx,
+				Params: goi.Params{
+					Style: goi.Style{
+						Height: goi.Size{
+							Mode:  goi.SizeModePx,
 							Value: 90,
 						},
-						Width: node.Size{
-							Mode:  node.SizeModePx,
+						Width: goi.Size{
+							Mode:  goi.SizeModePx,
 							Value: 90,
 						},
 					},
 				},
 			},
-			node.Margin{
+			goi.Margin{
 				Width: 15,
 			},
-			node.Column{
-				Children: []node.Widget{
-					node.Inline{
-						Children: []node.Widget{
-							node.Text{
+			goi.Column{
+				Children: []goi.Widget{
+					goi.Inline{
+						Children: []goi.Widget{
+							goi.Text{
 								Content: i.Title,
-								TextStyle: node.TextStyle{
+								TextStyle: goi.TextStyle{
 									FontSize:   26,
-									FontWeight: node.FontWeight700,
+									FontWeight: goi.FontWeight700,
 								},
 							},
 						},
 					},
-					node.Inline{
-						Children: []node.Widget{
-							node.Text{
+					goi.Inline{
+						Children: []goi.Widget{
+							goi.Text{
 								Content: i.Content,
 							},
 						},
@@ -141,6 +141,6 @@ func (i Item) GetWidget(context *node.Context) node.Widget {
 	}
 }
 
-func (i Item) Pack(context node.Context) node.Node {
-	return node.PackStateless(i, context)
+func (i Item) Pack(context goi.Context) goi.Node {
+	return goi.PackStateless(i, context)
 }

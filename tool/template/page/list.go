@@ -2,7 +2,7 @@ package page
 
 import (
 	"fmt"
-	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi"
 	"github.com/TobiasYin/goi/tool/template/component"
 	"math/rand"
 	"strings"
@@ -11,8 +11,8 @@ import (
 type listPage struct {
 }
 
-func (i listPage) GetPage() *node.Page {
-	var itemList []node.Widget
+func (i listPage) GetPage() *goi.Page {
+	var itemList []goi.Widget
 	itemList = append(itemList, component.StatefulDemo{
 		Value: "List",
 	})
@@ -21,7 +21,7 @@ func (i listPage) GetPage() *node.Page {
 		for j := 0; j < rand.Intn(10) + 10; j++{
 			content.WriteString(fmt.Sprintf("Content %d! ", i))
 		}
-		itemList = append(itemList, node.Margin{
+		itemList = append(itemList, goi.Margin{
 			Child: component.Item{
 				Title: fmt.Sprintf("Title %d", i),
 				Content: content.String(),
@@ -30,13 +30,13 @@ func (i listPage) GetPage() *node.Page {
 			Width: 20,
 		})
 	}
-	return node.NewPage("List", func(this *node.Context) node.Widget {
-		return node.Column{
+	return goi.NewPage("List", func(this *goi.Context) goi.Widget {
+		return goi.Column{
 			Children: itemList,
 		}
 	})
 }
 
-func NewListPage(m map[string]interface{}) node.PageGetter {
+func NewListPage(m map[string]interface{}) goi.PageGetter {
 	return listPage{}
 }
