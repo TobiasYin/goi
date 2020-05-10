@@ -1,7 +1,7 @@
 package page
 
 import (
-	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi"
 	"github.com/TobiasYin/goi/tool/template/component"
 )
 
@@ -9,60 +9,60 @@ type imagePage struct {
 	title string
 }
 
-func (i imagePage) GetPage() *node.Page {
+func (i imagePage) GetPage() *goi.Page {
 	imageWidth := 100
-	return node.NewPage("Image", func(this *node.Context) node.Widget {
-		return node.Column{
-			Alignment: node.Center,
-			Children: []node.Widget{
-				node.Text{
+	return goi.NewPage("Image", func(this *goi.Context) goi.Widget {
+		return goi.Column{
+			Alignment: goi.Center,
+			Children: []goi.Widget{
+				goi.Text{
 					Content: "Page Title: " + i.title,
 				},
-				node.Text{
+				goi.Text{
 					Content: "New Page",
 				},
-				node.Link{
-					Child: node.Text{Content: "baidu"},
+				goi.Link{
+					Child: goi.Text{Content: "baidu"},
 					Href:  "http://www.baidu.com",
 				},
 				component.StatefulDemo{
-					Key:   node.GenerateKeyWithCallLine(),
+					Key:   goi.GenerateKeyWithCallLine(),
 					Value: "In Page",
 				},
-				node.BR{},
-				node.Image{
+				goi.BR{},
+				goi.Image{
 					Src: "asset/image/example.png",
-					Params: node.Params{
-						Style: node.Style{
-							Height: node.Size{
+					Params: goi.Params{
+						Style: goi.Style{
+							Height: goi.Size{
 								Value: imageWidth,
 							},
-							Width: node.Size{
+							Width: goi.Size{
 								Value: imageWidth,
 							},
 						},
 					},
 				},
-				node.Row{
-					Children: []node.Widget{
-						node.Button{
-							Child: node.Text{
+				goi.Row{
+					Children: []goi.Widget{
+						goi.Button{
+							Child: goi.Text{
 								Content: "Enlarge Image",
 							},
-							Params: node.Params{
-								OnClick: func(e node.Event) {
+							Params: goi.Params{
+								OnClick: func(e goi.Event) {
 									this.SetState(func() {
 										imageWidth += 5
 									})
 								},
 							},
 						},
-						node.Button{
-							Child: node.Text{
+						goi.Button{
+							Child: goi.Text{
 								Content: "Smaller Image",
 							},
-							Params: node.Params{
-								OnClick: func(e node.Event) {
+							Params: goi.Params{
+								OnClick: func(e goi.Event) {
 									this.SetState(func() {
 										imageWidth -= 5
 									})
@@ -71,14 +71,14 @@ func (i imagePage) GetPage() *node.Page {
 						},
 					},
 				},
-				node.BR{},
-				node.Button{
-					Child: node.Text{
+				goi.BR{},
+				goi.Button{
+					Child: goi.Text{
 						Content: "back",
 					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
-							node.BackToLastPage()
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
+							goi.BackToLastPage()
 						},
 					},
 				},
@@ -87,7 +87,7 @@ func (i imagePage) GetPage() *node.Page {
 	})
 }
 
-func NewImagePage(m map[string]interface{}) node.PageGetter {
+func NewImagePage(m map[string]interface{}) goi.PageGetter {
 	n, ok := m["title"]
 	title := ""
 	if ok {

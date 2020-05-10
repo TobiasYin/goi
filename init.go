@@ -1,4 +1,4 @@
-package node
+package goi
 
 import (
 	dom "github.com/TobiasYin/goi/vdom"

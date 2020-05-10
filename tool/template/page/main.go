@@ -1,41 +1,41 @@
 package page
 
 import (
-	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi"
 	"github.com/TobiasYin/goi/tool/template/component"
 )
 
-func GetMainPage() *node.Page {
-	return node.NewPage("Main", func(this *node.Context) node.Widget {
-		return node.Column{
-			Alignment: node.Center,
-			Children: []node.Widget{
-				node.Link{
-					Child: node.Text{Content: "Image page"},
-					Href: "/image?title=hello!",
+func GetMainPage() *goi.Page {
+	return goi.NewPage("Main", func(this *goi.Context) goi.Widget {
+		return goi.Column{
+			Alignment: goi.Center,
+			Children: []goi.Widget{
+				goi.Link{
+					Child: goi.Text{Content: "Image page"},
+					Href:  "/image?title=hello!",
 				},
-				node.Button{
-					Child: node.Text{Content: "To new Page"},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
-							node.PushByPath("/image", map[string]interface{}{
+				goi.Button{
+					Child: goi.Text{Content: "To new Page"},
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
+							goi.PushByPath("/image", map[string]interface{}{
 								"title": "base64 test",
 							})
 						},
 					},
 				},
-				node.Text{Content: "Hello"},
+				goi.Text{Content: "Hello"},
 				component.StatefulDemo{
-					Key: node.GenerateKeyWithCallLine(),
+					Key:   goi.GenerateKeyWithCallLine(),
 					Value: " Hello ",
-					Size: 22,
+					Size:  22,
 				},
 				component.StatelessDemo{
 					Value: "World",
 				},
-				node.Link{
-					Child: node.Text{Content: "Go To List Page"},
-					Href: "/list",
+				goi.Link{
+					Child: goi.Text{Content: "Go To List Page"},
+					Href:  "/list",
 				},
 			},
 		}

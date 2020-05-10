@@ -1,59 +1,59 @@
 package page
 
 import (
+	"github.com/TobiasYin/goi"
 	"github.com/TobiasYin/goi/example/component"
-	"github.com/TobiasYin/goi/node"
 )
 
 type imagePage struct {
 	title string
 }
 
-func (i imagePage)GetPage() *node.Page {
-	return node.NewPage("Image", func(this *node.Context) node.Widget {
-		return node.Column{
-			Alignment: node.Center,
-			Children: []node.Widget{
-				node.Text{
+func (i imagePage)GetPage() *goi.Page {
+	return goi.NewPage("Image", func(this *goi.Context) goi.Widget {
+		return goi.Column{
+			Alignment: goi.Center,
+			Children: []goi.Widget{
+				goi.Text{
 					Content: "Page Title: " + i.title,
 				},
-				node.Text{
+				goi.Text{
 					Content: "New Page",
 				},
-				node.Link{
-					Child: node.Text{Content: "new"},
-					Href: "new",
+				goi.Link{
+					Child: goi.Text{Content: "new"},
+					Href:  "new",
 				},
-				node.Link{
-					Child: node.Text{Content: "baidu"},
+				goi.Link{
+					Child: goi.Text{Content: "baidu"},
 					Href:  "http://www.baidu.com",
 				},
 				component.StatefulDemo{
-					Key: node.GenerateKeyWithCallLine(),
+					Key:   goi.GenerateKeyWithCallLine(),
 					Value: "In Page",
 				},
-				node.BR{},
-				node.Image{
+				goi.BR{},
+				goi.Image{
 					Src: "/example.png",
-					Params: node.Params{
-						Style: node.Style{
-							Height: node.Size{
+					Params: goi.Params{
+						Style: goi.Style{
+							Height: goi.Size{
 								Value: 100,
 							},
-							Width: node.Size{
+							Width: goi.Size{
 								Value: 100,
 							},
 						},
 					},
 				},
-				node.BR{},
-				node.Button{
-					Child: node.Text{
+				goi.BR{},
+				goi.Button{
+					Child: goi.Text{
 						Content: "back",
 					},
-					Params: node.Params{
-						OnClick: func(e node.Event) {
-							node.BackToLastPage()
+					Params: goi.Params{
+						OnClick: func(e goi.Event) {
+							goi.BackToLastPage()
 						},
 					},
 				},
@@ -62,7 +62,7 @@ func (i imagePage)GetPage() *node.Page {
 	})
 }
 
-func IntoImage(m map[string]interface{}) node.PageGetter {
+func IntoImage(m map[string]interface{}) goi.PageGetter {
 	n, ok := m["title"]
 	title := ""
 	if ok {

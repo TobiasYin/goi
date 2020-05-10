@@ -1,20 +1,20 @@
 package page
 
 import (
-	"github.com/TobiasYin/goi/node"
+	"github.com/TobiasYin/goi"
 )
 
 type relativePage struct {
 }
 
-func (r relativePage) GetPage() *node.Page {
-	return node.NewPage("Relative", func(this *node.Context) node.Widget {
-		return node.Column{
-			Alignment: node.Center,
-			Children: []node.Widget{
-				node.Block{
-					Children: []node.Widget{
-						node.Text{Content: "welcome to new page"},
+func (r relativePage) GetPage() *goi.Page {
+	return goi.NewPage("Relative", func(this *goi.Context) goi.Widget {
+		return goi.Column{
+			Alignment: goi.Center,
+			Children: []goi.Widget{
+				goi.Block{
+					Children: []goi.Widget{
+						goi.Text{Content: "welcome to new page"},
 					},
 				},
 			},
@@ -22,6 +22,6 @@ func (r relativePage) GetPage() *node.Page {
 	})
 }
 
-func NewRelative(m map[string]interface{}) node.PageGetter {
+func NewRelative(m map[string]interface{}) goi.PageGetter {
 	return relativePage{}
 }

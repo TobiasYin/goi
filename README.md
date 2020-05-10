@@ -12,7 +12,7 @@ package main
 import (
 	"fmt"
 	"github.com/TobiasYin/goi/node"
-	"github.com/TobiasYin/goi/node/color"
+	"github.com/TobiasYin/goi/color"
 )
 
 func main() {
