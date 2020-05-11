@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/TobiasYin/goi/tool/inline"
-	"github.com/TobiasYin/goi/tool/server"
+	"github.com/TobiasYin/goi/goi-cli/inline"
+	"github.com/TobiasYin/goi/goi-cli/server"
 	"io/ioutil"
 	"log"
 	"os"
@@ -177,7 +177,7 @@ func create(base string, f inline.File) {
 		}
 		if allowPostfix[postfix] {
 			c := string(o)
-			c = strings.Replace(c, "github.com/TobiasYin/goi/tool/template", *repo, -1)
+			c = strings.Replace(c, "github.com/TobiasYin/goi/goi-cli/template", *repo, -1)
 			c = strings.Replace(c, "{{PROJECT_NAME}}", *project, -1)
 			c = strings.Replace(c, "{{PROJECT_PATH}}", getProjectPath(), -1)
 			_, err = file.WriteString(c)

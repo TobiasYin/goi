@@ -83,7 +83,7 @@ fabric.properties
 # Test binary, built with `go test -c`
 *.test
 
-# Output of the go coverage tool, specifically when used with LiteIDE
+# Output of the go coverage goi-cli, specifically when used with LiteIDE
 *.out
 
 # Dependency directories (remove the comment below to include it)
@@ -107,7 +107,7 @@ fabric.properties
 
 .DS_Store
 
-tool/inline/init.go
+goi-cli/inline/init.go
 
 *output*
 
@@ -119,6 +119,6 @@ goi_tool.out
 */goi_tool.exe
 */goi_tool.out
 
-tool/goi_tool
-tool/goi_tool.exe
-tool/goi_tool.out
+goi-cli/goi_tool
+goi-cli/goi_tool.exe
+goi-cli/goi_tool.out

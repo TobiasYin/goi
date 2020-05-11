@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/TobiasYin/goi"
 	"github.com/TobiasYin/goi/logs"
-	pages "github.com/TobiasYin/goi/tool/template/page"
-	_ "github.com/TobiasYin/goi/tool/template/urls"
+	pages "github.com/TobiasYin/goi/goi-cli/template/page"
+	_ "github.com/TobiasYin/goi/goi-cli/template/urls"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package page
 import (
 	"fmt"
 	"github.com/TobiasYin/goi"
-	"github.com/TobiasYin/goi/tool/template/component"
+	"github.com/TobiasYin/goi/goi-cli/template/component"
 	"math/rand"
 	"strings"
 )

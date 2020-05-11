@@ -2,7 +2,7 @@ package urls
 
 import (
 	"github.com/TobiasYin/goi"
-	pages "github.com/TobiasYin/goi/tool/template/page"
+	pages "github.com/TobiasYin/goi/goi-cli/template/page"
 )
 
 func init() {
