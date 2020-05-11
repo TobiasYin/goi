@@ -107,18 +107,14 @@ fabric.properties
 
 .DS_Store
 
-goi-cli/inline/init.go
-
 *output*
 
-goi_tool
-goi_tool.exe
-goi_tool.out
+goi-cli.exe
+goi-cli.out
 
-*/goi_tool
-*/goi_tool.exe
-*/goi_tool.out
+*/goi-cli.exe
+*/goi-cli.out
 
-goi-cli/goi_tool
-goi-cli/goi_tool.exe
-goi-cli/goi_tool.out
+goi-cli/goi-cli
+goi-cli/goi-cli.exe
+goi-cli/goi-cli.out
