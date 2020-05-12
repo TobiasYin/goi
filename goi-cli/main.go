@@ -205,7 +205,7 @@ func main() {
 		}
 	}
 	if *here {
-		goPath = os.Getenv("PWD")
+		goPath, _ = os.Getwd()
 		goPathVerbose = "Current Path"
 	} else {
 		goPath = os.Getenv("GOPATH")
